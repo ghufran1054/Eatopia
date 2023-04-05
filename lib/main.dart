@@ -1,3 +1,4 @@
+import 'package:eatopia/pages/loading.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,15 +10,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text(
-            'Hello World!',
-            style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-          ),
-        ),
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'ubuntu',
       ),
+      home: const LoadingScreen(),
     );
   }
 }
