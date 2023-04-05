@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-class UserSignUp extends StatefulWidget {
-  const UserSignUp({super.key});
+////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
+class UserSignUpPageOne extends StatefulWidget {
+  const UserSignUpPageOne({super.key});
 
   @override
-  State<UserSignUp> createState() => _UserSignUpState();
+  State<UserSignUpPageOne> createState() => _UserSignUpPageOneState();
 }
 
-class _UserSignUpState extends State<UserSignUp> {
+class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
   final Color _primaryColor = Color.fromARGB(255, 87, 126, 255);
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -150,6 +151,9 @@ class _UserSignUpState extends State<UserSignUp> {
               ),
             ),
             const SizedBox(height: 20),
+
+            //NEXT SCREEN BUTTON
+            //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
             ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
@@ -162,12 +166,39 @@ class _UserSignUpState extends State<UserSignUp> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   )),
-              onPressed: () {},
-              child: const Text('Sign Up'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/UserSignUpPageTwo', arguments: {
+                  'email': emailController.text,
+                  'password': passwordController.text,
+                });
+              },
+              child: const Text('Continue'),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+//USER SIGN - UP PAGE TWO TAKE INPUT FOR USERNAME, PHONE NUMBER AND ADDRESS AND THEN THE SIGN UP IS COMPLETE
+
+class UserSignUpPageTwo extends StatefulWidget {
+  const UserSignUpPageTwo({super.key});
+
+  @override
+  State<UserSignUpPageTwo> createState() => _UserSignUpPageTwoState();
+}
+
+class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
+  Map userData = {};
+  @override
+  Widget build(BuildContext context) {
+    //We got this data from first page of sign up
+    userData = ModalRoute.of(context)!.settings.arguments as Map;
+    return Scaffold(
+      appBar: AppBar(title: Text('Page Two')),
+      body: Text('${userData['email']}, ${userData['password']}'),
     );
   }
 }
