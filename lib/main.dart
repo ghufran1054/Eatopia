@@ -2,6 +2,8 @@ import 'package:eatopia/pages/loading.dart';
 import 'package:eatopia/pages/user_sign_up.dart';
 import 'package:flutter/material.dart';
 
+import 'pages/welcome_page.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -18,6 +20,7 @@ class MainApp extends StatelessWidget {
         '/': (context) => const LoadingScreen(),
         '/UserSignUpPageOne': (context) => const UserSignUpPageOne(),
         '/UserSignUpPageTwo': (context) => const UserSignUpPageTwo(),
+        '/WelcomePage': (context) => const WelcomePage(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
