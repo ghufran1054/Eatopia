@@ -10,6 +10,7 @@ dependencies:
   cloud_firestore: ^4.5.0
   email_validator: ^2.1.17
   firebase_core: ^2.9.0
+  flutter_signin_button: ^2.0.0
   flutter:
     sdk: flutter
   flutter_awesome_buttons: ^1.1.0
