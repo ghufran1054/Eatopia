@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   email_validator: ^2.1.17
+  flutter_signin_button: ^2.0.0
   flutter:
     sdk: flutter
   flutter_awesome_buttons: ^1.1.0

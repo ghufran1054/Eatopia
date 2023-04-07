@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:eatopia/utilities/colours.dart';
 
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
 class UserSignUpPageOne extends StatefulWidget {
@@ -12,7 +13,7 @@ class UserSignUpPageOne extends StatefulWidget {
 class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
   //This _formKey will help us validate the inputs (check whether the user has entered the correct input or not)
   final _formKey = GlobalKey<FormState>();
-  final Color _primaryColor = Color.fromARGB(255, 45, 94, 255);
+  final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final userNameController = TextEditingController();
