@@ -9,84 +9,78 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      //crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.all(30),
-          alignment: Alignment.topCenter,
-          //margin: EdgeInsets.only(left: 350.0),
-          child: Image.asset(
-            'images/eatopia.png',
-            width: 250.0,
-            height: 250.0,
-          ),
-        ),
-
-        Container(
-          margin: EdgeInsets.all(20.0),
-          width: 180,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Color.fromARGB(255, 255, 255, 255),
-              // change background color of button
-              backgroundColor: appGreen, // change text color of button
+        body: Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              'images/eatopia.png',
+              width: MediaQuery.of(context).size.width * 0.35,
+              height: MediaQuery.of(context).size.height * 0.25,
             ),
-            child: Text("Login"),
-          ),
-        ),
-
-        Container(
-          margin: EdgeInsets.all(20.0),
-          width: 180,
-          height: 50,
-          color: appGreen,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Color.fromARGB(255, 255, 255, 255),
-              // change background color of button
-              backgroundColor: appGreen, // change text color of button
+            const SizedBox(
+              height: 20,
             ),
-            child: Text("Sign Up"),
-          ),
-        ),
-
-        Container(
-          margin: EdgeInsets.all(20.0),
-          width: 180,
-          height: 50,
-          color: appGreen,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Color.fromARGB(255, 255, 255, 255),
-              // change background color of button
-              backgroundColor: appGreen, // change text color of button
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              child: ElevatedButton(
+                onPressed: () {
+                  //Navigator.pushNamed(context, '/LoginPage');
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(180, 40),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  // change background color of button
+                  backgroundColor: appGreen, // change text color of button
+                ),
+                child: const Text("Login"),
+              ),
             ),
-            child: Text("Continue as Guest"),
-          ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/UserSignUpPageOne');
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(180, 40),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  // change background color of button
+                  backgroundColor: appGreen, // change text color of button
+                ),
+                child: const Text("Sign Up"),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              child: ElevatedButton(
+                onPressed: () {
+                  //Navigator.pushNamed(context, '/HomePage');
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(180, 40),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  // change background color of button
+                  backgroundColor: appGreen, // change text color of button
+                ),
+                child: Text("Continue as Guest"),
+              ),
+            ),
+            SignInButton(
+              Buttons.Google,
+              text: "Sign up with Google",
+              onPressed: () {},
+            ),
+          ],
         ),
-        SignInButton(
-          Buttons.Google,
-          text: "Sign up with Google",
-          onPressed: () {},
-        ),
-        // Container(
-        //     margin: EdgeInsets.all(20.0),
-        //     width: 160,
-        //     child: GredientButton(
-        //         title: "Continue as a Guest",
-        //         onPressed: () {},
-        //         splashColor: Color.fromRGBO(255, 0, 0, 1),
-        //         colors: const [
-        //           Color.fromARGB(255, 1, 109, 57),
-        //           Color.fromRGBO(175, 40, 40, 1)
-        //         ])),
-      ],
+      ),
     ));
   }
 }
