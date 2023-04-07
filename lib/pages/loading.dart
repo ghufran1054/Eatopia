@@ -22,14 +22,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Image(image: AssetImage("images/eatopia.png"))],
-          ),
+          Image(
+              image: const AssetImage("images/eatopia.png"),
+              width: MediaQuery.of(context).size.width / 2,
+              height: MediaQuery.of(context).size.height / 4),
           const SizedBox(height: 20),
           SpinKitThreeBounce(
             color: appGreen,
