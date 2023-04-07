@@ -26,7 +26,7 @@ class WelcomePage extends StatelessWidget {
 
         Container(
           margin: EdgeInsets.all(20.0),
-          width: 160,
+          width: 180,
           height: 50,
           child: ElevatedButton(
             onPressed: () {},
@@ -41,7 +41,7 @@ class WelcomePage extends StatelessWidget {
 
         Container(
           margin: EdgeInsets.all(20.0),
-          width: 160,
+          width: 180,
           height: 50,
           color: appGreen,
           child: ElevatedButton(
@@ -57,7 +57,7 @@ class WelcomePage extends StatelessWidget {
 
         Container(
           margin: EdgeInsets.all(20.0),
-          width: 160,
+          width: 180,
           height: 50,
           color: appGreen,
           child: ElevatedButton(
