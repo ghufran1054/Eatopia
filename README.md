@@ -1,3 +1,3 @@
-# eatopia
+# Eatopia
 
-A new Flutter project.
+A Food Delivery Android Application build with Flutter as our Database project.

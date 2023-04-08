@@ -1,4 +1,7 @@
+import 'package:eatopia/utilities/colours.dart';
+import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
 class UserSignUpPageOne extends StatefulWidget {
@@ -9,149 +12,73 @@ class UserSignUpPageOne extends StatefulWidget {
 }
 
 class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
-  final Color _primaryColor = Color.fromARGB(255, 87, 126, 255);
+  //This _formKey will help us validate the inputs (check whether the user has entered the correct input or not)
+  final _formKey = GlobalKey<FormState>();
+  final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final userNameController = TextEditingController();
-  Icon passIcon = const Icon(
-    Icons.visibility,
-    size: 20,
-    color: Color.fromARGB(255, 87, 126, 255),
-  );
-  bool _isObscure = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            TextButton(
-              onPressed: () {},
-              child: const Text('Already have an account?'),
-            ),
-          ],
-        ),
-      ),
       appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: _primaryColor,
-        title: const Text('Sign Up'),
-      ),
+          iconTheme: const IconThemeData(
+            color: Colors.black,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          toolbarHeight: 70,
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            Image(image: AssetImage('images/eatopia.png'), height: 50),
+            SizedBox(width: 10),
+            Text('EATOPIA',
+                style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 2,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold))
+          ])),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            //EMAIL TEXT FIELD
-            TextFormField(
-              controller: emailController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              cursorColor: Colors.grey[600],
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                constraints: const BoxConstraints(maxHeight: 50),
-                label: const Text('EMAIL'),
-                prefixIcon: Icon(
-                  Icons.email,
-                  color: _primaryColor,
-                  size: 20,
-                ),
-                floatingLabelStyle:
-                    TextStyle(color: _primaryColor, fontSize: 15),
-                labelStyle: TextStyle(color: _primaryColor, fontSize: 10),
-                hintText: 'Enter your email',
-                hintStyle: const TextStyle(fontSize: 14),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
+            const Text(
+              'Sign Up',
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
               ),
             ),
-            const SizedBox(height: 20),
-
-            //USERNAME TEXT FIELD
-            TextFormField(
-              controller: userNameController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              cursorColor: Colors.grey[600],
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                constraints: const BoxConstraints(maxHeight: 50),
-                label: const Text('USERNAME'),
-                floatingLabelStyle:
-                    TextStyle(color: _primaryColor, fontSize: 15),
-                prefixIcon: Icon(Icons.person, color: _primaryColor, size: 20),
-                labelStyle: TextStyle(color: _primaryColor, fontSize: 10),
-                hintText: 'Enter your username',
-                hintStyle: const TextStyle(fontSize: 14),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            //PASSWORD TEXT FIELD
-            TextFormField(
-              controller: passwordController,
-              onTapOutside: (event) => FocusScope.of(context).unfocus(),
-              obscureText: _isObscure,
-              decoration: InputDecoration(
-                suffix: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure;
-                      if (_isObscure) {
-                        passIcon = Icon(
-                          Icons.visibility,
+            const SizedBox(height: 40),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    //EMAIL TEXT FIELD
+                    CustomTextField(
+                        icon: const Icon(
+                          Icons.email,
+                          color: Colors.black,
                           size: 20,
-                          color: _primaryColor,
-                        );
-                      } else {
-                        passIcon = Icon(
-                          Icons.visibility_off,
-                          size: 20,
-                          color: _primaryColor,
-                        );
-                      }
-                    });
-                  },
-                  icon: passIcon,
-                  iconSize: 20,
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                constraints: const BoxConstraints(maxHeight: 50),
-                label: const Text('PASSWORD'),
-                floatingLabelStyle:
-                    TextStyle(color: _primaryColor, fontSize: 15),
-                prefixIcon:
-                    Icon(Icons.password, color: _primaryColor, size: 20),
-                labelStyle: TextStyle(color: _primaryColor, fontSize: 10),
-                hintText: 'Enter your password',
-                hintStyle: const TextStyle(fontSize: 14),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: _primaryColor),
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
+                        ),
+                        labelText: 'Email',
+                        hintText: 'Enter your email',
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!EmailValidator.validate(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                        emailController: emailController,
+                        boxH: 100,
+                        primaryColor: _primaryColor),
+                    const SizedBox(height: 20),
+                  ],
+                )),
             //NEXT SCREEN BUTTON
             //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
             ElevatedButton(
@@ -167,13 +94,35 @@ class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
                     ),
                   )),
               onPressed: () {
+                if (!_formKey.currentState!.validate()) {
+                  return;
+                }
                 Navigator.pushNamed(context, '/UserSignUpPageTwo', arguments: {
                   'email': emailController.text,
-                  'password': passwordController.text,
                 });
               },
               child: const Text('Continue'),
             ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Already have an account?'),
+                TextButton(
+                  style: ButtonStyle(
+                    foregroundColor:
+                        MaterialStateProperty.all<Color>(_primaryColor),
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/UserSignIn');
+                  },
+                  child: const Text(
+                    'Log In',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
+            )
           ],
         ),
       ),
@@ -192,13 +141,177 @@ class UserSignUpPageTwo extends StatefulWidget {
 
 class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
   Map userData = {};
+  final _formKey = GlobalKey<FormState>();
+  final Color _primaryColor = appGreen;
+  final userNameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final addressController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     //We got this data from first page of sign up
     userData = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
-      appBar: AppBar(title: Text('Page Two')),
-      body: Text('${userData['email']}, ${userData['password']}'),
+      appBar: AppBar(
+          iconTheme: const IconThemeData(
+            color: Colors.black,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          toolbarHeight: 70,
+          title:
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+            Image(image: AssetImage('images/eatopia.png'), height: 50),
+            SizedBox(width: 10),
+            Text('EATOPIA',
+                style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 2,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold))
+          ])),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const Text(
+                  'Sign Up',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        //USER NAME TEXT FIELD
+                        CustomTextField(
+                            icon: const Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            ),
+                            labelText: 'User Name',
+                            hintText: 'Enter your user name',
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your user name';
+                              }
+                              return null;
+                            },
+                            emailController: userNameController,
+                            boxH: 100,
+                            primaryColor: _primaryColor),
+                        const SizedBox(height: 20),
+                        //PASSWORD TEXT FIELD
+                        PasswordTextField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
+                            labelText: 'Password',
+                            hintText: 'Enter your password',
+                            passwordController: passwordController,
+                            boxPassH: 100,
+                            primaryColor: _primaryColor),
+                        const SizedBox(height: 20),
+                        //Confirm PASSWORD TEXT FIELD
+                        PasswordTextField(
+                          labelText: 'Confirm',
+                          hintText: 'Enter your password again',
+                          passwordController: confirmPasswordController,
+                          boxPassH: 100,
+                          primaryColor: _primaryColor,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your password again';
+                            }
+                            if (value != passwordController.text) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        //Phone Number Text Field
+                        CustomTextField(
+                            inputType: TextInputType.phone,
+                            icon: const Icon(
+                              Icons.phone,
+                              color: Colors.black,
+                            ),
+                            labelText: 'Phone Number',
+                            hintText: 'Enter your phone number',
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your phone number';
+                              }
+                              return null;
+                            },
+                            emailController: phoneController,
+                            boxH: 100,
+                            primaryColor: _primaryColor),
+                        const SizedBox(height: 20),
+
+                        //Address Text Field
+                        CustomTextField(
+                            inputType: TextInputType.streetAddress,
+                            icon: const Icon(
+                              Icons.location_on,
+                              color: Colors.black,
+                            ),
+                            labelText: 'Address',
+                            hintText: 'Enter your address',
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter your address';
+                              }
+                              return null;
+                            },
+                            emailController: addressController,
+                            boxH: 100,
+                            primaryColor: _primaryColor),
+                        const SizedBox(height: 10),
+                      ],
+                    )),
+                //TODO: NOW USE FIREBASE TO SEND THIS DATA TO DATABASE
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(_primaryColor),
+                      fixedSize: MaterialStateProperty.all<Size>(Size(
+                          MediaQuery.of(context).size.width / 3,
+                          MediaQuery.of(context).size.height / 18)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      )),
+                  onPressed: () {
+                    if (!_formKey.currentState!.validate()) {
+                      return;
+                    }
+                  },
+                  child: const Text('Sign Up'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
