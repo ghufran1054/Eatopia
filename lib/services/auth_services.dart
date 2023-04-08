@@ -6,7 +6,7 @@ class AuthServices {
   void isSignedIn(BuildContext context) async {
     await Future.delayed(const Duration(seconds: 3));
 
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const WelcomePage()));
+    // Navigator.pushReplacement(
+    //     context, MaterialPageRoute(builder: (context) => const WelcomePage()));
   }
 }

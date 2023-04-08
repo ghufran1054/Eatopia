@@ -1,5 +1,6 @@
 import 'package:eatopia/pages/loading.dart';
 import 'package:eatopia/pages/user_sign_up.dart';
+import 'package:eatopia/services/maps.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,12 +21,13 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/MapScreen',
       routes: {
         '/': (context) => const LoadingScreen(),
         '/UserSignUpPageOne': (context) => const UserSignUpPageOne(),
         '/UserSignUpPageTwo': (context) => const UserSignUpPageTwo(),
         '/WelcomePage': (context) => const WelcomePage(),
+        '/MapScreen': (context) => MapScreen(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
