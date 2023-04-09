@@ -4,6 +4,7 @@ import 'package:eatopia/services/maps.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'pages/user_home.dart';
 import 'pages/welcome_page.dart';
 
 void main() async {
@@ -28,6 +29,7 @@ class MainApp extends StatelessWidget {
         '/UserSignUpPageTwo': (context) => const UserSignUpPageTwo(),
         '/WelcomePage': (context) => const WelcomePage(),
         '/MapScreen': (context) => MapScreen(),
+        '/UserHomePage': (context) => const UserHomePage(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
