@@ -2,7 +2,6 @@ import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:eatopia/utilities/colours.dart';
 
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
 class UserSignUpPageOne extends StatefulWidget {
@@ -81,7 +80,6 @@ class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
                   ],
                 )),
             //NEXT SCREEN BUTTON
-            //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
             ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:

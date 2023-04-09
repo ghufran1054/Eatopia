@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_awesome_buttons/flutter_awesome_buttons.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
@@ -60,7 +59,7 @@ class WelcomePage extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  //Navigator.pushNamed(context, '/HomePage');
+                  Navigator.pushNamed(context, '/UserHomePage');
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(180, 40),
@@ -70,7 +69,7 @@ class WelcomePage extends StatelessWidget {
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
-                child: Text("Continue as Guest"),
+                child: const Text("Continue as Guest"),
               ),
             ),
             SignInButton(
