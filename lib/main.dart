@@ -1,4 +1,5 @@
 import 'package:eatopia/pages/loading.dart';
+import 'package:eatopia/pages/login.dart';
 import 'package:eatopia/pages/user_sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
@@ -28,6 +29,7 @@ class MainApp extends StatelessWidget {
         '/UserSignUpPageTwo': (context) => const UserSignUpPageTwo(),
         '/WelcomePage': (context) => const WelcomePage(),
         '/UserHomePage': (context) => const UserHomePage(),
+        '/LoginPage': (context) => const LoginPage(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
