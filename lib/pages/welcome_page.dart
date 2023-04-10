@@ -75,7 +75,9 @@ class WelcomePage extends StatelessWidget {
             SignInButton(
               Buttons.Google,
               text: "Sign up with Google",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, '/MapScreen');
+              },
             ),
           ],
         ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,17 +12,11 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
-  late LatLng _center;
-  late LatLng _markerLocation;
+  LatLng _center = const LatLng(0, 0);
+  LatLng _markerLocation = const LatLng(0, 0);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-  }
-
-  void _onMarkerDragEnd(LatLng position) {
-    setState(() {
-      _markerLocation = position;
-    });
   }
 
   @override
@@ -36,6 +32,7 @@ class _MapScreenState extends State<MapScreen> {
     // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      Geolocator.openLocationSettings();
       // Location services are disabled, show an error message
       return;
     }
