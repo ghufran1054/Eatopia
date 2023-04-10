@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
+  final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,6 +78,20 @@ class _LoginPageState extends State<LoginPage> {
                         boxH: 100,
                         primaryColor: _primaryColor),
                     const SizedBox(height: 20),
+
+                    PasswordTextField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                        passwordController: passwordController,
+                        boxPassH: 100,
+                        primaryColor: _primaryColor),
+                    const SizedBox(height: 20),
                   ],
                 )),
             //NEXT SCREEN BUTTON
@@ -107,17 +122,18 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Already have an account?'),
+                const Text('Don\'t have an account?'),
                 TextButton(
                   style: ButtonStyle(
                     foregroundColor:
                         MaterialStateProperty.all<Color>(_primaryColor),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/UserSignIn');
+                    Navigator.pushReplacementNamed(
+                        context, '/UserSignUpPageOne');
                   },
                   child: const Text(
-                    'Log In',
+                    'Sign Up',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )

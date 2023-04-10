@@ -113,7 +113,7 @@ class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
                         MaterialStateProperty.all<Color>(_primaryColor),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/UserSignIn');
+                    Navigator.pushReplacementNamed(context, '/LoginPage');
                   },
                   child: const Text(
                     'Log In',

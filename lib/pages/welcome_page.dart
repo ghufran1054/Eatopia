@@ -25,7 +25,7 @@ class WelcomePage extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  //Navigator.pushNamed(context, '/LoginPage');
+                  Navigator.pushNamed(context, '/LoginPage');
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(180, 40),
