@@ -349,6 +349,12 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                       });
                       await AuthServices().signUpwithEmail(
                           userData['email'], passwordController.text);
+                      await AuthServices().addCustomers({
+                        'name': userNameController.text,
+                        'email': userData['email'],
+                        'phone': phoneController.text,
+                        'stAddress': addressController.text,
+                      });
                       setState(() {
                         isLoading = false;
                       });

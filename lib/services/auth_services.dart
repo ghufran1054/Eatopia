@@ -4,9 +4,16 @@ import 'package:eatopia/pages/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthServices {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
+
+  //Recieves the Customer information Map
+  Future<void> addCustomers(Map<String, dynamic> data) async {
+    await db.collection('Customers').doc(auth.currentUser!.uid).set(data);
+  }
 
   void isSignedIn(BuildContext context) async {
     await auth.signOut();
@@ -23,20 +30,25 @@ class AuthServices {
 
   Future<bool> emailExists(String email) async {
     try {
-      await auth.createUserWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
           email: email, password: "someBOdyNeverGOOnnaUsEthisPassWOrDDMDK");
     } on FirebaseAuthException catch (e) {
       log(e.code.toString());
       switch (e.code) {
-        case "email-already-in-use":
-          return true;
+        case "user-not-found":
+          return false;
       }
     }
-    return false;
+    return true;
   }
 
   Future<void> signUpwithEmail(String email, String password) async {
-    await auth.createUserWithEmailAndPassword(email: email, password: password);
+    try {
+      await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+    } on FirebaseAuthException catch (e) {
+      return;
+    }
   }
 
   Future<User?> signInWithGoogle({required BuildContext context}) async {
@@ -77,6 +89,7 @@ class AuthServices {
           );
         }
       } catch (e) {
+        return null;
         // handle the error here
       }
     }

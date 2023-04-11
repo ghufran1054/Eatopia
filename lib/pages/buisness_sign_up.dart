@@ -17,7 +17,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
   final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final OwnerController = TextEditingController();
+  final ownerController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -81,7 +81,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                                   }
                                   return null;
                                 },
-                                emailController: OwnerController,
+                                emailController: ownerController,
                                 boxH: 100,
                                 primaryColor: _primaryColor),
                             const SizedBox(height: 20),
@@ -207,8 +207,6 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                             const SizedBox(height: 10),
                           ],
                         )),
-
-                    //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
                     ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor:
