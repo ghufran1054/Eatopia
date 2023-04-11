@@ -19,6 +19,8 @@ dependencies:
   geolocator: ^9.0.2
   permission_handler: ^10.2.0
   search_map_place_updated: ^0.0.4
+  firebase_auth: ^4.4.0
+  google_sign_in: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +34,9 @@ flutter:
   - family: Ubuntu
     fonts:
     - asset: fonts/Ubuntu/Ubuntu-Light.ttf
+  - family: Ubuntu-bold
+    fonts:
+    - asset: fonts/Ubuntu/Ubuntu-Bold.ttf
   assets:
     - images/
 

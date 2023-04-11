@@ -14,6 +14,10 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   LatLng _center = const LatLng(0, 0);
   LatLng _markerLocation = const LatLng(0, 0);
+  late Marker _marker = Marker(
+    markerId: const MarkerId('Current Location'),
+    position: _markerLocation,
+  );
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -57,16 +61,25 @@ class _MapScreenState extends State<MapScreen> {
     // Get the user's current location
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    await initialize(position);
+  }
 
+  Future<void> initialize(Position position) async {
     setState(() {
       _center = LatLng(position.latitude, position.longitude);
-      _markerLocation = LatLng(position.latitude, position.longitude);
+      _marker = Marker(
+        markerId: const MarkerId('Current Location'),
+        position: _center,
+        infoWindow: const InfoWindow(
+          title: 'Current Location',
+        ),
+      );
     });
   }
 
   void _onCameraMove(CameraPosition position) {
     setState(() {
-      _markerLocation = position.target;
+      _marker = _marker.copyWith(positionParam: position.target);
     });
   }
 
@@ -102,12 +115,7 @@ class _MapScreenState extends State<MapScreen> {
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
             markers: {
-              Marker(
-                markerId: MarkerId('userLocation'),
-                position: _markerLocation,
-                // draggable: true,
-                // onDragEnd: _onMarkerDragEnd,
-              ),
+              _marker,
             },
           ),
           Positioned(
