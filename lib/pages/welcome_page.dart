@@ -1,7 +1,6 @@
 import 'package:eatopia/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
