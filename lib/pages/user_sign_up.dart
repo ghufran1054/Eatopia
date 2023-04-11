@@ -1,3 +1,4 @@
+import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
   final _formKey = GlobalKey<FormState>();
   final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,15 +94,48 @@ class _UserSignUpPageOneState extends State<UserSignUpPageOne> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   )),
-              onPressed: () {
+              onPressed: () async {
                 if (!_formKey.currentState!.validate()) {
+                  return;
+                }
+
+                setState(() {
+                  isLoading = true;
+                });
+                bool res =
+                    await AuthServices().emailExists(emailController.text);
+                if (res) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: appRed,
+                      elevation: 10,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      content: const Text('Email already exists'),
+                    ),
+                  );
+                  setState(() {
+                    isLoading = false;
+                  });
                   return;
                 }
                 Navigator.pushNamed(context, '/UserSignUpPageTwo', arguments: {
                   'email': emailController.text,
                 });
+                setState(() {
+                  isLoading = false;
+                });
               },
-              child: const Text('Continue'),
+              child: isLoading
+                  ? const CircularProgressIndicator(
+                      strokeWidth: 1.2,
+                      color: Colors.white,
+                    )
+                  : const Text('Continue'),
             ),
 
             Row(
@@ -147,6 +182,8 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
   final addressController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     //We got this data from first page of sign up
@@ -257,6 +294,9 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please enter your phone number';
+                              } else if (int.tryParse(value) == null ||
+                                  value.length < 10) {
+                                return 'Please enter a valid phone number';
                               }
                               return null;
                             },
@@ -288,24 +328,37 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                     )),
                 //TODO: NOW USE FIREBASE TO SEND THIS DATA TO DATABASE
                 ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(_primaryColor),
-                      fixedSize: MaterialStateProperty.all<Size>(Size(
-                          MediaQuery.of(context).size.width / 3,
-                          MediaQuery.of(context).size.height / 18)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      )),
-                  onPressed: () {
-                    if (!_formKey.currentState!.validate()) {
-                      return;
-                    }
-                  },
-                  child: const Text('Sign Up'),
-                ),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(_primaryColor),
+                        fixedSize: MaterialStateProperty.all<Size>(Size(
+                            MediaQuery.of(context).size.width / 3,
+                            MediaQuery.of(context).size.height / 18)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        )),
+                    onPressed: () async {
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await AuthServices().signUpwithEmail(
+                          userData['email'], passwordController.text);
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                    child: isLoading
+                        ? const CircularProgressIndicator(
+                            strokeWidth: 1,
+                            color: Colors.white,
+                          )
+                        : const Text('Sign Up')),
               ],
             ),
           ),

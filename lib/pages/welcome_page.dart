@@ -1,3 +1,4 @@
+import 'package:eatopia/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -28,14 +29,14 @@ class WelcomePage extends StatelessWidget {
                   Navigator.pushNamed(context, '/LoginPage');
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(180, 40),
+                  fixedSize: const Size(200, 40),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
                   foregroundColor: Color.fromARGB(255, 255, 255, 255),
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
-                child: const Text("Login"),
+                child: const Text("Login with Email"),
               ),
             ),
             Container(
@@ -45,38 +46,68 @@ class WelcomePage extends StatelessWidget {
                   Navigator.pushNamed(context, '/UserSignUpPageOne');
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(180, 40),
+                  fixedSize: const Size(200, 40),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
                   foregroundColor: Color.fromARGB(255, 255, 255, 255),
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
-                child: const Text("Sign Up"),
+                child: const Text("Sign up with Email"),
               ),
             ),
             Container(
               margin: const EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/UserHomePage');
+                  Navigator.pushReplacementNamed(context, '/UserHomePage');
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(180, 40),
+                  fixedSize: const Size(200, 40),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  foregroundColor: Colors.white,
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
                 child: const Text("Continue as Guest"),
               ),
             ),
-            SignInButton(
-              Buttons.Google,
-              text: "Sign up with Google",
-              onPressed: () {},
+            Container(
+              width: 200,
+              height: 1.2,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                fixedSize: const Size(230, 40),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                foregroundColor: Colors.white,
+                // change background color of button
+                backgroundColor: Colors.white, // change text color of button
+              ),
+              onPressed: () {
+                AuthServices().signInWithGoogle(context: context);
+              },
+              label: const Text(
+                "Continue with Google",
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+              icon: Image.asset(
+                'images/google.png',
+                height: 30,
+              ),
+            )
           ],
         ),
       ),
