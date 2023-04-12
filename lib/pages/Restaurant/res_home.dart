@@ -36,6 +36,9 @@ class _ResHomeState extends State<ResHome> {
                 },
                 child: ListView(
                   children: const [
+                    //Restaurant Name Display
+                    RestaurantNameWidget(),
+                    SizedBox(height: 20),
                     //Image Select Widget
                     ImageSelectWidget(),
                     SizedBox(height: 20),
@@ -46,6 +49,112 @@ class _ResHomeState extends State<ResHome> {
               ),
             ),
           );
+  }
+}
+
+class RestaurantNameWidget extends StatefulWidget {
+  const RestaurantNameWidget({super.key});
+
+  @override
+  State<RestaurantNameWidget> createState() => _RestaurantNameWidgetState();
+}
+
+class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
+  late Size scrSize;
+  late String resName = "";
+  bool isLoading = true;
+
+  Future<void> changeResName() async {
+    final String uid = AuthServices().auth.currentUser!.uid;
+    final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
+
+    await doc.update({"restaurant": resName});
+
+    setState(() {});
+  }
+
+  Future<void> getResName() async {
+    final String uid = AuthServices().auth.currentUser!.uid;
+    final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
+    final data = await doc.get();
+    setState(() {
+      resName = data.get('restaurant');
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getResName();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    scrSize = MediaQuery.of(context).size;
+    return Container(
+      padding: EdgeInsets.all(20),
+      height: 100,
+      width: scrSize.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: Center(
+        child: isLoading
+            ? CircularProgressIndicator.adaptive()
+            : Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      resName,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'ubuntu-bold',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    onPressed: () async {
+                      final TextEditingController conroller =
+                          TextEditingController();
+                      conroller.text = resName;
+                      await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          title: const Text('Change Restaurant Name'),
+                          content: TextField(
+                            controller: conroller,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter new name',
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                resName = conroller.text;
+                                await changeResName();
+                                Navigator.pop(context, resName);
+                              },
+                              child: const Text('Change'),
+                            ),
+                          ],
+                        ),
+                      );
+                      await changeResName();
+                      setState(() {});
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                ],
+              ),
+      ),
+    );
   }
 }
 
@@ -128,10 +237,13 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
     return Container(
-      color: Colors.white,
       padding: EdgeInsets.all(20),
       height: 250,
       width: scrSize.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.white,
+      ),
       child: Column(
         children: [
           Row(
