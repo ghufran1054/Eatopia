@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/Customer/user_home.dart';
+import 'pages/Restaurant/add_menu_items.dart';
 import 'pages/welcome_page.dart';
 
 void main() async {
@@ -25,7 +26,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: 'add_menu_items',
       routes: {
         '/': (context) => const LoadingScreen(),
         '/UserSignUpPageOne': (context) => const UserSignUpPageOne(),
@@ -35,6 +36,7 @@ class MainApp extends StatelessWidget {
         '/LoginPage': (context) => const LoginPage(),
         '/BuisnessSignup': (context) => const BuisnessSignup(),
         '/ResHomePage': (context) => const ResHome(),
+        '/add_menu_items': (context) => const add_menu_items(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
