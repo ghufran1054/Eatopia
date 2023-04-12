@@ -84,6 +84,7 @@ class ImageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 200,
+      margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.transparent),
         color: Colors.white,
@@ -96,7 +97,7 @@ class ImageTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               image: DecorationImage(
-                image: AssetImage(image),
+                image: NetworkImage(image),
                 fit: BoxFit.fill,
               ),
             ),

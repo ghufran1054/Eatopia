@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
@@ -140,34 +141,7 @@ class _UserMainHomeState extends State<UserMainHome> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Expanded(
-                      child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: const [
-                            ImageTile(
-                                heading: 'KFC',
-                                description: 'Burgers, Chicken, Fries',
-                                image: 'images/res.jpeg'),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            ImageTile(
-                                heading: 'Pizza Hut',
-                                description: 'Burgers, Chicken, Fries',
-                                image: 'images/res.jpeg'),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            ImageTile(
-                                heading: 'KFC',
-                                description:
-                                    'Burgers, Chicken, Fries, kdskjk asdjnnjjnas nasjnjnsadjnn jnasjd',
-                                image: 'images/res.jpeg'),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                          ]),
-                    ),
+                    Expanded(child: const RestaurantTiles()),
                   ],
                 ),
               ),
@@ -178,3 +152,67 @@ class _UserMainHomeState extends State<UserMainHome> {
     );
   }
 }
+
+class RestaurantTiles extends StatefulWidget {
+  const RestaurantTiles({super.key});
+
+  @override
+  State<RestaurantTiles> createState() => _RestaurantTilesState();
+}
+
+class _RestaurantTilesState extends State<RestaurantTiles> {
+  @override
+  Widget build(BuildContext context) {
+    // Create a reference to the collection
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection('Restaurants');
+
+// Build a stream of QuerySnapshot containing all the documents in the collection
+    Stream<QuerySnapshot> stream = collectionRef.snapshots();
+    return StreamBuilder(
+        stream: stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) {
+                final doc = snapshot.data!.docs[index];
+
+                return ImageTile(
+                  heading: doc['restaurant'],
+                  description: doc['description'],
+                  image: doc['ImageURL'],
+                );
+              },
+              scrollDirection: Axis.horizontal,
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator.adaptive());
+          }
+        });
+  }
+}
+// const [
+//                             ImageTile(
+//                                 heading: 'KFC',
+//                                 description: 'Burgers, Chicken, Fries',
+//                                 image: 'images/res.jpeg'),
+//                             const SizedBox(
+//                               width: 10,
+//                             ),
+//                             ImageTile(
+//                                 heading: 'Pizza Hut',
+//                                 description: 'Burgers, Chicken, Fries',
+//                                 image: 'images/res.jpeg'),
+//                             const SizedBox(
+//                               width: 10,
+//                             ),
+//                             ImageTile(
+//                                 heading: 'KFC',
+//                                 description:
+//                                     'Burgers, Chicken, Fries, kdskjk asdjnnjjnas nasjnjnsadjnn jnasjd',
+//                                 image: 'images/res.jpeg'),
+//                             const SizedBox(
+//                               width: 10,
+//                             ),
+//                           ]

@@ -257,11 +257,15 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                           'restaurant': restaurantController.text,
                           'phone': phoneController.text,
                           'address': addressController.text,
+                          'Categories': [],
                         });
 
                         setState(() {
                           isLoading = false;
                         });
+
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/ResHomePage', (route) => false);
                       },
                       child: isLoading
                           ? const CircularProgressIndicator(
