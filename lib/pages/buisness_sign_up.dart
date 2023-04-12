@@ -3,6 +3,8 @@ import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
+import '../services/auth_services.dart';
+
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
 class BuisnessSignup extends StatefulWidget {
   const BuisnessSignup({super.key});
@@ -22,7 +24,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
   final addressController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final restaurantController = TextEditingController();
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,16 +222,53 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           )),
-                      onPressed: () {
+                      onPressed: () async {
                         if (!_formKey.currentState!.validate()) {
                           return;
                         }
-                        Navigator.pushNamed(context, '/UserSignUpPageTwo',
-                            arguments: {
-                              'email': emailController.text,
-                            });
+
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool exists = await AuthServices()
+                            .emailExists(emailController.text);
+
+                        if (exists) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  content: Text('Email already in use')));
+                          return;
+                        }
+                        await AuthServices().signUpwithEmail(
+                            emailController.text, passwordController.text);
+
+                        await AuthServices().addRestaurant({
+                          'owner': ownerController.text,
+                          'restaurant': restaurantController.text,
+                          'phone': phoneController.text,
+                          'address': addressController.text,
+                        });
+
+                        setState(() {
+                          isLoading = false;
+                        });
                       },
-                      child: const Text('Register'),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1,
+                            )
+                          : const Text('Register'),
                     ),
                   ],
                 ),

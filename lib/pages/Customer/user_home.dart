@@ -50,11 +50,10 @@ class _UserHomePageState extends State<UserHomePage> {
         const Center(
           child: Text('Favourites'),
         ),
-        const Center(
-          child: Text('Cart'),
-        ),
-        const Center(
-          child: Text('Profile'),
+        Center(
+          child: FloatingActionButton(onPressed: () {
+            Navigator.pushNamed(context, '/BuisnessSignup');
+          }),
         ),
       ][selectedIndex],
     );

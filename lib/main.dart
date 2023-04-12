@@ -1,7 +1,9 @@
+import 'package:eatopia/pages/Restaurant/res_home.dart';
 import 'package:eatopia/pages/loading.dart';
 import 'package:eatopia/pages/login.dart';
 import 'package:eatopia/pages/user_sign_up.dart';
 import 'package:eatopia/pages/buisness_sign_up.dart';
+import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,9 +34,22 @@ class MainApp extends StatelessWidget {
         '/UserHomePage': (context) => const UserHomePage(),
         '/LoginPage': (context) => const LoginPage(),
         '/BuisnessSignup': (context) => const BuisnessSignup(),
+        '/ResHomePage': (context) => const ResHome(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
+        primarySwatch: MaterialColor(0xFF016D39, {
+          50: appGreen,
+          100: appGreen,
+          200: appGreen,
+          300: appGreen,
+          400: appGreen,
+          500: appGreen,
+          600: appGreen,
+          700: appGreen,
+          800: appGreen,
+          900: appGreen,
+        }),
       ),
     );
   }
