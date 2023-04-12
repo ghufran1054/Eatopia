@@ -326,7 +326,6 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                         const SizedBox(height: 10),
                       ],
                     )),
-                //TODO: NOW USE FIREBASE TO SEND THIS DATA TO DATABASE
                 ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:

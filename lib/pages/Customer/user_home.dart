@@ -1,3 +1,4 @@
+import 'package:eatopia/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/pages/Customer/user_main_home.dart';
@@ -50,12 +51,63 @@ class _UserHomePageState extends State<UserHomePage> {
         const Center(
           child: Text('Favourites'),
         ),
-        Center(
-          child: FloatingActionButton(onPressed: () {
-            Navigator.pushNamed(context, '/BuisnessSignup');
-          }),
-        ),
+        const UserMorePage(),
       ][selectedIndex],
+    );
+  }
+}
+
+//GUZARE KE LYE CLASS BNA RHA HU
+
+class UserMorePage extends StatefulWidget {
+  const UserMorePage({super.key});
+
+  @override
+  State<UserMorePage> createState() => _UserMorePageState();
+}
+
+class _UserMorePageState extends State<UserMorePage> {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.business_center,
+                    color: Colors.black,
+                  ),
+                  title: const Text('Register your Business'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/BuisnessSignup');
+                  },
+                )),
+            Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.logout,
+                    color: Colors.black,
+                  ),
+                  title: const Text('Log out'),
+                  onTap: () async {
+                    await AuthServices().auth.signOut();
+                    Navigator.pushReplacementNamed(context, '/WelcomePage');
+                  },
+                )),
+          ],
+        ),
+      ),
     );
   }
 }
