@@ -14,6 +14,13 @@ class MenuItem {
 //   @override
 //   _AddMenuItemPageState createState() => _AddMenuItemPageState();
 // }
+var items = [
+  'Appetizer',
+  'Main Course',
+  'Dessert',
+  'Beverages',
+];
+String dropdownvalue = 'Appetizer';
 
 class add_menu_items extends StatelessWidget {
   const add_menu_items({super.key});
@@ -76,7 +83,44 @@ class add_menu_items extends StatelessWidget {
                 },
                 //onSaved: (newValue) => _price = double.parse(newValue!),
               ),
-              SizedBox(height: 32),
+              SizedBox(height: 40),
+              Text(
+                "choose meal type:",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 5),
+              DropdownButton(
+                // Initial Value
+                value: dropdownvalue,
+
+                // Down Arrow Icon
+                icon: const Icon(Icons.keyboard_arrow_down),
+
+                // Array list of items
+                items: items.map((String items) {
+                  return DropdownMenuItem(
+                    value: items,
+                    child: Text(
+                      items,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  );
+                }).toList(),
+                // After selecting the desired option,it will
+                // change button value to selected value
+                onChanged: (String? newValue) {
+                  setState(() {
+                    dropdownvalue = newValue!;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                //onPressed: _submitForm,
+                onPressed: () {},
+                child: Text('Upload Image'),
+              ),
+              SizedBox(height: 7),
               ElevatedButton(
                 //onPressed: _submitForm,
                 onPressed: () {},
@@ -89,3 +133,5 @@ class add_menu_items extends StatelessWidget {
     );
   }
 }
+
+void setState(Null Function() param0) {}
