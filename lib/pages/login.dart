@@ -122,9 +122,11 @@ class _LoginPageState extends State<LoginPage> {
 
                   if (res == null) {
                     if (await AuthServices().isCustomer()) {
-                      Navigator.pushReplacementNamed(context, '/UserHomePage');
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/UserHomePage', (route) => false);
                     } else {
-                      Navigator.pushReplacementNamed(context, '/ResHomePage');
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/ResHomePage', (route) => false);
                     }
                   } else {
                     if (res == 'user-not-found') {
@@ -168,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                         strokeWidth: 1,
                       )
                     : const Text(
-                        'Next',
+                        'Login',
                       )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

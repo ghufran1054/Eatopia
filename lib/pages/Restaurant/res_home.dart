@@ -26,6 +26,16 @@ class _ResHomeState extends State<ResHome> {
         ? const CircularProgressIndicator()
         : Scaffold(
             appBar: AppBar(
+              actions: [
+                IconButton(
+                  onPressed: () async {
+                    await AuthServices().auth.signOut();
+
+                    Navigator.pushReplacementNamed(context, '/WelcomePage');
+                  },
+                  icon: const Icon(Icons.logout),
+                ),
+              ],
               title: const Text('Restaurant Home'),
             ),
             body: Padding(
@@ -39,6 +49,10 @@ class _ResHomeState extends State<ResHome> {
                     //Restaurant Name Display
                     RestaurantNameWidget(),
                     SizedBox(height: 20),
+                    AddDescriptionWidget(),
+                    SizedBox(
+                      height: 20,
+                    ),
                     //Image Select Widget
                     ImageSelectWidget(),
                     SizedBox(height: 20),
@@ -49,6 +63,120 @@ class _ResHomeState extends State<ResHome> {
               ),
             ),
           );
+  }
+}
+
+class AddDescriptionWidget extends StatefulWidget {
+  const AddDescriptionWidget({super.key});
+
+  @override
+  State<AddDescriptionWidget> createState() => _AddDescriptionWidgetState();
+}
+
+class _AddDescriptionWidgetState extends State<AddDescriptionWidget> {
+  late Size scrSize;
+  String description = "";
+  bool isEnabled = false;
+  bool isLoading = true;
+  final controller = TextEditingController();
+  Future<void> getDescription() async {
+    final String uid = AuthServices().auth.currentUser!.uid;
+    final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
+    final data = await doc.get();
+    try {
+      setState(() {
+        description = data.get('description');
+        controller.text = description;
+      });
+    } catch (e) {}
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getDescription();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    scrSize = MediaQuery.of(context).size;
+    return Container(
+      padding: EdgeInsets.all(20),
+      width: scrSize.width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Text('Description: ',
+                  style: TextStyle(
+                      fontFamily: 'ubuntu-bold',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black)),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    isEnabled = !isEnabled;
+                  });
+                },
+                icon: const Icon(Icons.edit),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextField(
+            controller: controller,
+
+            //Close the text field when tap outside copilot
+            onTapOutside: (event) => FocusScope.of(context).unfocus(),
+            maxLines: 3,
+            enabled: isEnabled,
+            maxLength: 50,
+            decoration: const InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(),
+              labelText: 'Add Description',
+            ),
+          ),
+
+          //Save Button
+          if (isEnabled)
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              onPressed: () async {
+                setState(() {
+                  description = controller.text;
+                });
+                final String uid = AuthServices().auth.currentUser!.uid;
+                final doc = FirebaseFirestore.instance
+                    .collection('Restaurants')
+                    .doc(uid);
+                await doc.update({"description": description});
+                setState(() {
+                  isEnabled = false;
+                });
+              },
+              child: const Text('Save'),
+            ),
+        ],
+      ),
+    );
   }
 }
 
