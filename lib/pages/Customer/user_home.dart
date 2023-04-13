@@ -1,3 +1,4 @@
+import 'package:eatopia/pages/Customer/user_more.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
@@ -11,6 +12,11 @@ class UserHomePage extends StatefulWidget {
 }
 
 class _UserHomePageState extends State<UserHomePage> {
+  List<Widget> headings = [
+    const Text('Home'),
+    const Text('Cart'),
+    const Text('More')
+  ];
   int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -43,7 +49,7 @@ class _UserHomePageState extends State<UserHomePage> {
       ),
       appBar: AppBar(
         elevation: 0,
-        title: const Text('User Home'),
+        title: headings[selectedIndex],
         backgroundColor: appGreen,
       ),
       body: [
@@ -51,7 +57,8 @@ class _UserHomePageState extends State<UserHomePage> {
         const Center(
           child: Text('Favourites'),
         ),
-        const UserMorePage(),
+        //const UserMorePage(),
+        const UserMore(),
       ][selectedIndex],
     );
   }
