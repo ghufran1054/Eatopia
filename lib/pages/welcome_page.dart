@@ -61,7 +61,8 @@ class WelcomePage extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/UserHomePage');
+                  Navigator.pushReplacementNamed(
+                      context, '/UserHomePage'); // /UserHomePage
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(200, 40),
@@ -90,7 +91,7 @@ class WelcomePage extends StatelessWidget {
             ),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                fixedSize: const Size(230, 40),
+                fixedSize: const Size(255, 40),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
                 foregroundColor: Colors.white,
