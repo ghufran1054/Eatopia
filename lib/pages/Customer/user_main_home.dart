@@ -141,7 +141,7 @@ class _UserMainHomeState extends State<UserMainHome> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Expanded(child: const RestaurantTiles()),
+                    const Expanded(child: RestaurantTiles()),
                   ],
                 ),
               ),

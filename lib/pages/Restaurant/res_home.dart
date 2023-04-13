@@ -105,7 +105,7 @@ class _AddDescriptionWidgetState extends State<AddDescriptionWidget> {
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       width: scrSize.width,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -221,7 +221,7 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       height: 100,
       width: scrSize.width,
       decoration: BoxDecoration(
@@ -230,7 +230,7 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
       ),
       child: Center(
         child: isLoading
-            ? CircularProgressIndicator.adaptive()
+            ? const CircularProgressIndicator.adaptive()
             : Row(
                 children: [
                   Expanded(
@@ -365,7 +365,7 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       height: 250,
       width: scrSize.width,
       decoration: BoxDecoration(
@@ -381,7 +381,7 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
                 style: TextStyle(fontFamily: 'ubuntu-bold', fontSize: 20),
               ),
               const Spacer(),
-              IconButton(onPressed: imagePicker, icon: Icon(Icons.edit)),
+              IconButton(onPressed: imagePicker, icon: const Icon(Icons.edit)),
             ],
           ),
           isLoading
@@ -390,8 +390,8 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
               : (!isImageLoaded
                   ? Center(
                       child: TextButton(
-                      child: Text('Upload a Photo'),
                       onPressed: imagePicker,
+                      child: const Text('Upload a Photo'),
                     ))
                   : Container(
                       height: 150,
@@ -482,9 +482,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
       child: isLoading
           ? const Center(
               child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: const CircularProgressIndicator()))
+                  height: 30, width: 30, child: CircularProgressIndicator()))
           : Column(
               children: [
                 Row(
