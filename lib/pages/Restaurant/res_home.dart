@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/utilities/custom_shimmer.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/services/auth_services.dart';
@@ -16,52 +19,48 @@ class ResHome extends StatefulWidget {
 
 class _ResHomeState extends State<ResHome> {
   late Size scrSize;
-  bool isLoading = false;
-
   @override
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
 
-    return isLoading
-        ? const CircularProgressIndicator()
-        : Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  onPressed: () async {
-                    await AuthServices().auth.signOut();
-                    Navigator.pushReplacementNamed(context, '/WelcomePage');
-                  },
-                  icon: const Icon(Icons.logout),
-                ),
-              ],
-              title: const Text('Restaurant Home'),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {});
-                },
-                child: ListView(
-                  children: const [
-                    //Restaurant Name Display
-                    RestaurantNameWidget(),
-                    SizedBox(height: 20),
-                    AddDescriptionWidget(),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    //Image Select Widget
-                    ImageSelectWidget(),
-                    SizedBox(height: 20),
-                    //Category Container showing existing categories and add category button, remove the category, rename the category
-                    CategoriesWidget(),
-                  ],
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await AuthServices().auth.signOut();
+              Navigator.pushReplacementNamed(context, '/WelcomePage');
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+        title: const Text('Restaurant Home'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {});
+          },
+          child: ListView(
+            children: const [
+              //Restaurant Name Display
+              RestaurantNameWidget(),
+              SizedBox(height: 20),
+              AddDescriptionWidget(),
+              SizedBox(
+                height: 20,
               ),
-            ),
-          );
+              //Image Select Widget
+              ImageSelectWidget(),
+              SizedBox(height: 20),
+              //Category Container showing existing categories and add category button, remove the category, rename the category
+              CategoriesWidget(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -235,7 +234,7 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
       ),
       child: Center(
         child: isLoading
-            ? const CircularProgressIndicator.adaptive()
+            ? const CustomShimmer()
             : Row(
                 children: [
                   Expanded(
@@ -391,21 +390,27 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
             ],
           ),
           isLoading
-              ? const SizedBox(
-                  height: 30, width: 30, child: CircularProgressIndicator())
+              ? CustomShimmer(height: 150, width: scrSize.width)
               : (!isImageLoaded
                   ? Center(
                       child: TextButton(
                       onPressed: imagePicker,
                       child: const Text('Upload a Photo'),
                     ))
-                  : Container(
-                      height: 150,
-                      width: scrSize.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            fit: BoxFit.cover, image: NetworkImage(imageURL!)),
+                  : CachedNetworkImage(
+                      imageUrl: imageURL!,
+                      placeholder: (context, url) => CustomShimmer(
+                        height: 150,
+                        width: scrSize.width,
+                      ),
+                      imageBuilder: (context, imageProvider) => Container(
+                        height: 150,
+                        width: scrSize.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              fit: BoxFit.cover, image: imageProvider),
+                        ),
                       ),
                     )),
         ],

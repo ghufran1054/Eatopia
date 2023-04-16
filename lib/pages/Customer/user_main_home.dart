@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
@@ -179,21 +182,24 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
               itemBuilder: (context, index) {
                 final doc = snapshot.data!.docs[index];
 
-                return ImageTile(
-                  heading: doc['restaurant'],
-                  description: doc['description'],
-                  image: doc['ImageURL'],
+                return GestureDetector(
+                  onTap: () {
+                    log(doc.id);
+                  },
+                  child: ImageTile(
+                    heading: doc['restaurant'],
+                    description: doc['description'],
+                    image: doc['ImageURL'],
+                  ),
                 );
               },
               scrollDirection: Axis.horizontal,
             );
           } else {
-            return Shimmer(
-                child: Container(
+            return CustomShimmer(
               height: 200,
               width: MediaQuery.of(context).size.width,
-              color: Colors.grey[100],
-            ));
+            );
           }
         });
   }
