@@ -184,6 +184,17 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
   final confirmPasswordController = TextEditingController();
 
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     //We got this data from first page of sign up

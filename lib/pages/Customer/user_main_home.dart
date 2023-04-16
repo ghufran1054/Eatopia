@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class UserMainHome extends StatefulWidget {
   const UserMainHome({super.key});
@@ -187,32 +188,13 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
               scrollDirection: Axis.horizontal,
             );
           } else {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return Shimmer(
+                child: Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.grey[100],
+            ));
           }
         });
   }
 }
-// const [
-//                             ImageTile(
-//                                 heading: 'KFC',
-//                                 description: 'Burgers, Chicken, Fries',
-//                                 image: 'images/res.jpeg'),
-//                             const SizedBox(
-//                               width: 10,
-//                             ),
-//                             ImageTile(
-//                                 heading: 'Pizza Hut',
-//                                 description: 'Burgers, Chicken, Fries',
-//                                 image: 'images/res.jpeg'),
-//                             const SizedBox(
-//                               width: 10,
-//                             ),
-//                             ImageTile(
-//                                 heading: 'KFC',
-//                                 description:
-//                                     'Burgers, Chicken, Fries, kdskjk asdjnnjjnas nasjnjnsadjnn jnasjd',
-//                                 image: 'images/res.jpeg'),
-//                             const SizedBox(
-//                               width: 10,
-//                             ),
-//                           ]

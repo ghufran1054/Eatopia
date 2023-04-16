@@ -30,7 +30,6 @@ class _ResHomeState extends State<ResHome> {
                 IconButton(
                   onPressed: () async {
                     await AuthServices().auth.signOut();
-
                     Navigator.pushReplacementNamed(context, '/WelcomePage');
                   },
                   icon: const Icon(Icons.logout),
@@ -79,6 +78,12 @@ class _AddDescriptionWidgetState extends State<AddDescriptionWidget> {
   bool isEnabled = false;
   bool isLoading = true;
   final controller = TextEditingController();
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Future<void> getDescription() async {
     final String uid = AuthServices().auth.currentUser!.uid;
     final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
@@ -276,6 +281,7 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
                       );
                       await changeResName();
                       setState(() {});
+                      conroller.dispose();
                     },
                     icon: const Icon(Icons.edit),
                   ),

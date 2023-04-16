@@ -26,6 +26,18 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
   final restaurantController = TextEditingController();
   bool isLoading = false;
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    ownerController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    confirmPasswordController.dispose();
+    restaurantController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(

@@ -1,4 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class CustomTile extends StatelessWidget {
   const CustomTile(
@@ -56,14 +59,6 @@ class CustomTile extends StatelessWidget {
           ),
           const Spacer(),
           Align(alignment: Alignment.bottomRight, child: icon),
-
-          // Image(
-          //   image: AssetImage(
-          //     'images/eatopia.png',
-          //   ),
-          //   height: 30,
-          //   width: 100,
-          // ),
         ],
       ),
     );
@@ -80,6 +75,7 @@ class ImageTile extends StatelessWidget {
   final String heading;
   final String description;
   final String image;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,15 +88,32 @@ class ImageTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Container(
-            height: 100,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: NetworkImage(image),
-                fit: BoxFit.fill,
+          CachedNetworkImage(
+            imageUrl: image,
+            cacheManager: CacheManager(Config(
+              image,
+              stalePeriod: const Duration(days: 3),
+              maxNrOfCacheObjects: 100,
+            )),
+            imageBuilder: (context, imageProvider) => Container(
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
+            placeholder: (context, url) => Shimmer(
+                child: Container(
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[100],
+              ),
+            )),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
           const SizedBox(
             height: 10,
