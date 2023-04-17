@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:eatopia/utilities/colours.dart';
+import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -8,10 +7,12 @@ import 'package:geolocator/geolocator.dart';
 class MapScreen extends StatefulWidget {
   @override
   const MapScreen({super.key});
+  @override
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
+  bool isLoading = true;
   late GoogleMapController mapController;
   LatLng _center = const LatLng(0, 0);
   final LatLng _markerLocation = const LatLng(0, 0);
@@ -62,19 +63,16 @@ class _MapScreenState extends State<MapScreen> {
     // Get the user's current location
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    await initialize(position);
-  }
-
-  Future<void> initialize(Position position) async {
+    _center = LatLng(position.latitude, position.longitude);
+    _marker = Marker(
+      markerId: const MarkerId('Current Location'),
+      position: _center,
+      infoWindow: const InfoWindow(
+        title: 'Current Location',
+      ),
+    );
     setState(() {
-      _center = LatLng(position.latitude, position.longitude);
-      _marker = Marker(
-        markerId: const MarkerId('Current Location'),
-        position: _center,
-        infoWindow: const InfoWindow(
-          title: 'Current Location',
-        ),
-      );
+      isLoading = false;
     });
   }
 
@@ -109,41 +107,47 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text('Select your Location'),
         backgroundColor: appGreen,
       ),
-      body: Stack(
-        children: <Widget>[
-          GoogleMap(
-            onCameraMove: _onCameraMove,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(target: _center, zoom: 16.0),
-            markers: {
-              _marker,
-            },
-          ),
-          Positioned(
-            bottom: 16.0,
-            left: 16.0,
-            child: FloatingActionButton(
-              onPressed: () async {
-                //Update the location move the camera to current location
-                _getLocation();
-                mapController.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                      target: _center,
-                      zoom: 16.0,
+      body: isLoading
+          ? CustomShimmer(
+              height: double.infinity,
+              width: MediaQuery.of(context).size.width,
+            )
+          : Stack(
+              children: <Widget>[
+                GoogleMap(
+                  onCameraMove: _onCameraMove,
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition:
+                      CameraPosition(target: _center, zoom: 16.0),
+                  markers: {
+                    _marker,
+                  },
+                ),
+                Positioned(
+                  bottom: 16.0,
+                  left: 16.0,
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      //Update the location move the camera to current location
+                      _getLocation();
+                      mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: _center,
+                            zoom: 16.0,
+                          ),
+                        ),
+                      );
+                    },
+                    backgroundColor: appGreen,
+                    child: const Icon(
+                      Icons.my_location,
+                      color: Colors.white,
                     ),
                   ),
-                );
-              },
-              backgroundColor: appGreen,
-              child: const Icon(
-                Icons.my_location,
-                color: Colors.white,
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

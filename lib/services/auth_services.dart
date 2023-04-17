@@ -48,9 +48,6 @@ class AuthServices {
   }
 
   void isSignedIn(BuildContext context) async {
-    //TODO: REMOVE THIS LINE
-    //await auth.signOut();
-
     await Future.delayed(const Duration(seconds: 3), () async {
       if (auth.currentUser != null) {
         bool isCustomer = await AuthServices().isCustomer();

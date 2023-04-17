@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/utilities/colours.dart';
@@ -83,9 +80,9 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Icon(Icons.arrow_back),
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
+                  child: const Icon(Icons.arrow_back),
                 ),
               ),
               backgroundColor: Colors.white,

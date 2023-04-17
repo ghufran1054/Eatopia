@@ -29,14 +29,14 @@ class _UserProfileState extends State<UserProfile> {
               children: [
                 const SizedBox(height: 30),
                 Row(
-                  children: [
-                    const SizedBox(width: 20),
-                    const CircleAvatar(
+                  children: const [
+                    SizedBox(width: 20),
+                    CircleAvatar(
                       radius: 50,
                       backgroundImage: AssetImage('assets/images/user.png'),
                     ),
-                    const SizedBox(width: 20),
-                    const Text(
+                    SizedBox(width: 20),
+                    Text(
                       'Maazi Bhai',
                       style: TextStyle(
                         fontSize: 24,
@@ -74,11 +74,11 @@ class _UserProfileState extends State<UserProfile> {
                         children: [
                           ElevatedButton(
                             onPressed: () {},
-                            child: const Text('Edit'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: appGreen,
                               foregroundColor: Colors.white,
                             ),
+                            child: const Text('Edit'),
                           ),
                         ],
                       ),

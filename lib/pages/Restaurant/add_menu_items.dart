@@ -29,7 +29,7 @@ class add_menu_items extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add New Menu Item'),
+        title: const Text('Add New Menu Item'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,7 +39,7 @@ class add_menu_items extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a name';
@@ -48,7 +48,7 @@ class add_menu_items extends StatelessWidget {
                 },
                 //onSaved: (newValue) => _name = newValue!,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               //DropdownButtonFormField(
               //decoration: InputDecoration(labelText: 'Category'),
               //value: _category,
@@ -67,10 +67,11 @@ class add_menu_items extends StatelessWidget {
               // onChanged: (newValue) => setState(() => _category = newValue as String),
               // onSaved: (newValue) => _category = newValue!,
               //),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Price'),
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a price';
@@ -83,12 +84,12 @@ class add_menu_items extends StatelessWidget {
                 },
                 //onSaved: (newValue) => _price = double.parse(newValue!),
               ),
-              SizedBox(height: 40),
-              Text(
+              const SizedBox(height: 40),
+              const Text(
                 "choose meal type:",
                 style: TextStyle(fontSize: 20),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               DropdownButton(
                 // Initial Value
                 value: dropdownvalue,
@@ -102,7 +103,7 @@ class add_menu_items extends StatelessWidget {
                     value: items,
                     child: Text(
                       items,
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                   );
                 }).toList(),
@@ -114,17 +115,17 @@ class add_menu_items extends StatelessWidget {
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 //onPressed: _submitForm,
                 onPressed: () {},
-                child: Text('Upload Image'),
+                child: const Text('Upload Image'),
               ),
-              SizedBox(height: 7),
+              const SizedBox(height: 7),
               ElevatedButton(
                 //onPressed: _submitForm,
                 onPressed: () {},
-                child: Text('Add Menu Item'),
+                child: const Text('Add Menu Item'),
               ),
             ],
           ),

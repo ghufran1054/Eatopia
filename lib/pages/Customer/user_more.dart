@@ -1,6 +1,5 @@
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/utilities/colours.dart';
-import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class UserMore extends StatefulWidget {
