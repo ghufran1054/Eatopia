@@ -7,13 +7,14 @@ import 'package:geolocator/geolocator.dart';
 
 class MapScreen extends StatefulWidget {
   @override
+  const MapScreen({super.key});
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   LatLng _center = const LatLng(0, 0);
-  LatLng _markerLocation = const LatLng(0, 0);
+  final LatLng _markerLocation = const LatLng(0, 0);
   late Marker _marker = Marker(
     markerId: const MarkerId('Current Location'),
     position: _markerLocation,
