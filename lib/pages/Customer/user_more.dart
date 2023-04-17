@@ -12,6 +12,7 @@ class UserMore extends StatefulWidget {
 class _UserMoreState extends State<UserMore> {
   List<String> value = [
     'Profile',
+    'Address',
     'Create Business Account',
     'Terms and Policies',
     'About us',
@@ -21,6 +22,7 @@ class _UserMoreState extends State<UserMore> {
   //create a list containing the name and icon
   List<IconData> icons = [
     Icons.person,
+    Icons.location_on,
     Icons.business,
     Icons.policy,
     Icons.info,
@@ -66,6 +68,8 @@ class _UserMoreState extends State<UserMore> {
                   } else if (value[index] == 'Logout') {
                     await AuthServices().auth.signOut();
                     Navigator.pushNamed(context, '/WelcomePage');
+                  } else if (value[index] == 'Address') {
+                    Navigator.pushNamed(context, '/MapScreen');
                   }
                 },
               ),

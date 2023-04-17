@@ -37,7 +37,7 @@ class MainApp extends StatelessWidget {
         '/UserSignUpPageOne': (context) => const UserSignUpPageOne(),
         '/UserSignUpPageTwo': (context) => const UserSignUpPageTwo(),
         '/WelcomePage': (context) => const WelcomePage(),
-        '/MapScreen': (context) => MapScreen(),
+        '/MapScreen': (context) => const MapScreen(),
         '/UserHomePage': (context) => const UserHomePage(),
         '/LoginPage': (context) => const LoginPage(),
         '/BuisnessSignup': (context) => const BuisnessSignup(),
