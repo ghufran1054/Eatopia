@@ -398,6 +398,13 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
                       child: const Text('Upload a Photo'),
                     ))
                   : CachedNetworkImage(
+                      cacheManager: CacheManager(
+                        Config(
+                          AuthServices().auth.currentUser!.uid,
+                          stalePeriod: const Duration(days: 3),
+                          maxNrOfCacheObjects: 20,
+                        ),
+                      ),
                       imageUrl: imageURL!,
                       placeholder: (context, url) => CustomShimmer(
                         height: 150,

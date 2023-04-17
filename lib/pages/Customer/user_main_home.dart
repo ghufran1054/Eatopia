@@ -185,6 +185,13 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
                 return GestureDetector(
                   onTap: () {
                     log(doc.id);
+                    Navigator.pushNamed(context, '/UserRestauarantPage',
+                        arguments: {
+                          'id': doc.id,
+                          'restaurant': doc['restaurant'],
+                          'image': doc['ImageURL'],
+                          'description': doc['description'],
+                        });
                   },
                   child: ImageTile(
                     heading: doc['restaurant'],
