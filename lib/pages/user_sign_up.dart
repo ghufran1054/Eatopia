@@ -184,6 +184,17 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
   final confirmPasswordController = TextEditingController();
 
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    userNameController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     //We got this data from first page of sign up
@@ -326,7 +337,6 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                         const SizedBox(height: 10),
                       ],
                     )),
-                //TODO: NOW USE FIREBASE TO SEND THIS DATA TO DATABASE
                 ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:
@@ -349,6 +359,12 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                       });
                       await AuthServices().signUpwithEmail(
                           userData['email'], passwordController.text);
+                      await AuthServices().addCustomers({
+                        'name': userNameController.text,
+                        'email': userData['email'],
+                        'phone': phoneController.text,
+                        'stAddress': addressController.text,
+                      });
                       setState(() {
                         isLoading = false;
                       });

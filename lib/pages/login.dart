@@ -1,3 +1,4 @@
+import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,31 +96,82 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 20),
                   ],
                 )),
-            //NEXT SCREEN BUTTON
-            //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
             ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(_primaryColor),
-                  fixedSize: MaterialStateProperty.all<Size>(Size(
-                      MediaQuery.of(context).size.width / 3,
-                      MediaQuery.of(context).size.height / 18)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  )),
-              onPressed: () {
-                if (!_formKey.currentState!.validate()) {
-                  return;
-                }
-                Navigator.pushNamed(context, '/UserSignUpPageTwo', arguments: {
-                  'email': emailController.text,
-                });
-              },
-              child: const Text('Continue'),
-            ),
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(_primaryColor),
+                    fixedSize: MaterialStateProperty.all<Size>(Size(
+                        MediaQuery.of(context).size.width / 3,
+                        MediaQuery.of(context).size.height / 18)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    )),
+                onPressed: () async {
+                  if (!_formKey.currentState!.validate()) {
+                    return;
+                  }
 
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  String? res = await AuthServices().signInWithEmail(
+                      emailController.text, passwordController.text, context);
+
+                  if (res == null) {
+                    if (await AuthServices().isCustomer()) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/UserHomePage', (route) => false);
+                    } else {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/ResHomePage', (route) => false);
+                    }
+                  } else {
+                    if (res == 'user-not-found') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: appRed,
+                          elevation: 10,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                          ),
+                          content: const Text('No user found for that email'),
+                        ),
+                      );
+                    } else if (res == 'wrong-password') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: appRed,
+                          elevation: 10,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                          ),
+                          content: const Text('Wrong password'),
+                        ),
+                      );
+                    }
+                  }
+
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+                child: isLoading
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 1,
+                      )
+                    : const Text(
+                        'Login',
+                      )),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

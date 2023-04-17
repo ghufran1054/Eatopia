@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/services/auth_services.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 
@@ -31,7 +33,7 @@ class WelcomePage extends StatelessWidget {
                   fixedSize: const Size(200, 40),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  foregroundColor: const Color.fromARGB(255, 255, 255, 255),
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
@@ -48,7 +50,7 @@ class WelcomePage extends StatelessWidget {
                   fixedSize: const Size(200, 40),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0)),
-                  foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                  foregroundColor: const Color.fromARGB(255, 255, 255, 255),
                   // change background color of button
                   backgroundColor: appGreen, // change text color of button
                 ),
@@ -59,7 +61,8 @@ class WelcomePage extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/UserHomePage');
+                  Navigator.pushReplacementNamed(
+                      context, '/UserHomePage'); // /UserHomePage
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(200, 40),
@@ -88,15 +91,31 @@ class WelcomePage extends StatelessWidget {
             ),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                fixedSize: const Size(230, 40),
+                fixedSize: const Size(255, 40),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
                 foregroundColor: Colors.white,
                 // change background color of button
                 backgroundColor: Colors.white, // change text color of button
               ),
-              onPressed: () {
-                AuthServices().signInWithGoogle(context: context);
+              onPressed: () async {
+                await AuthServices().signInWithGoogle(context: context);
+                final user = AuthServices().auth.currentUser!;
+
+                //Checking if the Google User is already in the database
+                final docSnap = await FirebaseFirestore.instance
+                    .collection('Customers')
+                    .doc(user.uid)
+                    .get();
+                if (!docSnap.exists) {
+                  await AuthServices().addCustomers({
+                    'name': user.displayName,
+                    'email': user.email,
+                    'phone': user.phoneNumber,
+                    'stAddress': '',
+                  });
+                }
+                Navigator.pushReplacementNamed(context, '/UserHomePage');
               },
               label: const Text(
                 "Continue with Google",

@@ -1,13 +1,20 @@
+import 'package:eatopia/pages/Restaurant/res_home.dart';
 import 'package:eatopia/pages/loading.dart';
 import 'package:eatopia/pages/login.dart';
 import 'package:eatopia/pages/user_sign_up.dart';
 import 'package:eatopia/services/maps.dart';
 import 'package:eatopia/pages/buisness_sign_up.dart';
+import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'pages/Customer/about_us.dart';
 import 'pages/Customer/user_home.dart';
+import 'pages/Customer/user_profile.dart';
+import 'pages/Customer/user_res_page.dart';
+import 'pages/Restaurant/add_menu_items.dart';
 import 'pages/welcome_page.dart';
+import 'pages/Customer/Terms_policy.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +41,27 @@ class MainApp extends StatelessWidget {
         '/UserHomePage': (context) => const UserHomePage(),
         '/LoginPage': (context) => const LoginPage(),
         '/BuisnessSignup': (context) => const BuisnessSignup(),
+        '/ResHomePage': (context) => const ResHome(),
+        '/add_menu_items': (context) => const add_menu_items(),
+        '/User_profile': (context) => const UserProfile(),
+        '/Terms_policy': (context) => const Terms_policy(),
+        '/About_us': (context) => const About_us(),
+        '/UserRestauarantPage': (context) => const UserRestauarantPage(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',
+        primarySwatch: MaterialColor(0xFF016D39, {
+          50: appGreen,
+          100: appGreen,
+          200: appGreen,
+          300: appGreen,
+          400: appGreen,
+          500: appGreen,
+          600: appGreen,
+          700: appGreen,
+          800: appGreen,
+          900: appGreen,
+        }),
       ),
     );
   }

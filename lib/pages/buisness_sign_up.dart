@@ -3,6 +3,8 @@ import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
+import '../services/auth_services.dart';
+
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
 class BuisnessSignup extends StatefulWidget {
   const BuisnessSignup({super.key});
@@ -17,11 +19,23 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
   final Color _primaryColor = appGreen;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final OwnerController = TextEditingController();
+  final ownerController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final restaurantController = TextEditingController();
+  bool isLoading = false;
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    ownerController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    confirmPasswordController.dispose();
+    restaurantController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +95,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                                   }
                                   return null;
                                 },
-                                emailController: OwnerController,
+                                emailController: ownerController,
                                 boxH: 100,
                                 primaryColor: _primaryColor),
                             const SizedBox(height: 20),
@@ -207,8 +221,6 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                             const SizedBox(height: 10),
                           ],
                         )),
-
-                    //TODO: ADD VALIDATION in ON PRESSED FIRST THEN NAVIGATE TO NEXT SCREEN
                     ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor:
@@ -222,16 +234,57 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           )),
-                      onPressed: () {
+                      onPressed: () async {
                         if (!_formKey.currentState!.validate()) {
                           return;
                         }
-                        Navigator.pushNamed(context, '/UserSignUpPageTwo',
-                            arguments: {
-                              'email': emailController.text,
-                            });
+
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool exists = await AuthServices()
+                            .emailExists(emailController.text);
+
+                        if (exists) {
+                          setState(() {
+                            isLoading = false;
+                          });
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                                  elevation: 10,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                    ),
+                                  ),
+                                  content: Text('Email already in use')));
+                          return;
+                        }
+                        await AuthServices().signUpwithEmail(
+                            emailController.text, passwordController.text);
+
+                        await AuthServices().addRestaurant({
+                          'owner': ownerController.text,
+                          'restaurant': restaurantController.text,
+                          'phone': phoneController.text,
+                          'address': addressController.text,
+                          'Categories': [],
+                        });
+
+                        setState(() {
+                          isLoading = false;
+                        });
+
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/ResHomePage', (route) => false);
                       },
-                      child: const Text('Register'),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1,
+                            )
+                          : const Text('Register'),
                     ),
                   ],
                 ),
