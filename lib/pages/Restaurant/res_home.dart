@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:eatopia/utilities/custom_shimmer.dart';
+
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +11,7 @@ import 'package:eatopia/services/auth_services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:eatopia/pages/Restaurant/res_items_page.dart';
 
 class ResHome extends StatefulWidget {
   const ResHome({super.key});
@@ -19,11 +22,34 @@ class ResHome extends StatefulWidget {
 
 class _ResHomeState extends State<ResHome> {
   late Size scrSize;
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: (value) => setState(() => selectedIndex = value),
+          showUnselectedLabels: false,
+          elevation: 5,
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt),
+              label: 'Items',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.discount),
+              label: 'Orders',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'More'),
+          ]),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -36,12 +62,9 @@ class _ResHomeState extends State<ResHome> {
         ],
         title: const Text('Restaurant Home'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-        child: RefreshIndicator(
-          onRefresh: () async {
-            setState(() {});
-          },
+      body: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
           child: ListView(
             children: const [
               //Restaurant Name Display
@@ -59,7 +82,11 @@ class _ResHomeState extends State<ResHome> {
             ],
           ),
         ),
-      ),
+
+        const ResItemsPage(),
+        // const ResOrders(),
+        // const ResMore(),
+      ][selectedIndex],
     );
   }
 }

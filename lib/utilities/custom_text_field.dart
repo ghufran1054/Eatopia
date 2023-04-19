@@ -9,7 +9,7 @@ class CustomTextField extends StatefulWidget {
     required this.hintText,
     required this.labelText,
     required this.validator,
-    required this.icon,
+    this.icon,
     this.inputType = TextInputType.text,
   }) : _primaryColor = primaryColor;
 
@@ -19,7 +19,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final String labelText;
   String? Function(String?)? validator;
-  final Icon icon;
+  final Icon? icon;
   final TextInputType inputType;
 
   @override
