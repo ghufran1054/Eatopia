@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -192,15 +192,7 @@ class _ResTabsState extends State<ResTabs> {
   List<String> tabs = [];
   bool isLoading = true;
   void getCategories() async {
-    tabs = [];
-    final doc = await FirebaseFirestore.instance
-        .collection('Restaurants')
-        .doc(widget.id)
-        .get();
-    List<dynamic> fetched = doc['Categories'];
-    for (var cat in fetched) {
-      tabs.add(cat);
-    }
+    tabs = await Db().getRestaurantCategories(widget.id);
 
     setState(() {
       isLoading = false;

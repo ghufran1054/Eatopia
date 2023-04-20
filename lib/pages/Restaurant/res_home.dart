@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/services/db.dart';
 
 import 'package:eatopia/utilities/custom_shimmer.dart';
 
@@ -492,16 +493,8 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
   }
 
   Future<void> getCategories() async {
-    categories = [];
-
-    final doc = await FirebaseFirestore.instance
-        .collection('Restaurants')
-        .doc(AuthServices().auth.currentUser!.uid)
-        .get();
-    List<dynamic> fetchedCategories = doc['Categories'];
-    for (var cat in fetchedCategories) {
-      categories.add(cat);
-    }
+    categories = await Db()
+        .getRestaurantCategories(AuthServices().auth.currentUser!.uid);
     setState(() {
       isLoading = false;
     });
@@ -525,9 +518,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: isLoading
-          ? const Center(
-              child: SizedBox(
-                  height: 30, width: 30, child: CircularProgressIndicator()))
+          ? Center(child: CustomShimmer(height: 300, width: scrSize.width))
           : Column(
               children: [
                 Row(

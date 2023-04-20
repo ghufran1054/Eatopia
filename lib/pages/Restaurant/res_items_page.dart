@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:math';
-
+import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
+import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,36 +31,61 @@ class ResItemsPage extends StatefulWidget {
 
 class _ResItemsPageState extends State<ResItemsPage> {
   bool isLoading = true;
+  List<String> categories = [];
+
+  void getCategories() async {
+    categories = await Db()
+        .getRestaurantCategories(AuthServices().auth.currentUser!.uid);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCategories();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.white,
-          child: const Center(
-            child: Text('Items'),
-          ),
-        ),
-        Positioned(
-          bottom: 20,
-          right: 20,
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            foregroundColor: appGreen,
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddItemPage()));
-            },
-            child: const Icon(Icons.add),
-          ),
-        ),
-      ],
-    );
+    return isLoading
+        ? CustomShimmer(
+            height: MediaQuery.of(context).size.height,
+          )
+        : Stack(
+            children: [
+              Container(
+                color: Colors.white,
+                child: const Center(
+                  child: Text('Items'),
+                ),
+              ),
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  foregroundColor: appGreen,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddItemPage(
+                                  categories: categories,
+                                )));
+                  },
+                  child: const Icon(Icons.add),
+                ),
+              ),
+            ],
+          );
   }
 }
 
 class AddItemPage extends StatefulWidget {
-  const AddItemPage({super.key});
+  const AddItemPage({super.key, required this.categories});
+  final List<String> categories;
 
   @override
   State<AddItemPage> createState() => _AddItemPageState();
@@ -69,7 +96,7 @@ class _AddItemPageState extends State<AddItemPage> {
   final descController = TextEditingController();
   final priceController = TextEditingController();
   Map<String, int> addOns = {};
-  String selectedCategory = '0';
+  String selectedCategory = '';
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
@@ -82,12 +109,13 @@ class _AddItemPageState extends State<AddItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    selectedCategory = widget.categories[0];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Item'),
       ),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(
           child: Form(
               key: _formKey,
@@ -207,6 +235,7 @@ class _AddItemPageState extends State<AddItemPage> {
                           : Image.file(imageFile!),
                     ),
                     const SizedBox(height: 20),
+
                     //Category select Dropdown
                     const Align(
                       alignment: Alignment.centerLeft,
@@ -223,16 +252,19 @@ class _AddItemPageState extends State<AddItemPage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: DropdownButton(
+                      child: DropdownButtonFormField(
+                        borderRadius: BorderRadius.circular(20),
                         isExpanded: true,
-                        underline: Container(),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
                         value: selectedCategory,
-                        items: List.generate(
-                            100,
-                            (index) => DropdownMenuItem(
-                                  value: index.toString(),
-                                  child: Text('Category $index'),
-                                )),
+                        items: widget.categories.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                         onChanged: (value) {
                           setState(() {
                             selectedCategory = value.toString();
@@ -265,69 +297,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        final nameController =
-                                            TextEditingController();
-                                        final addOnPriceController =
-                                            TextEditingController();
-                                        return AlertDialog(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          title: const Text('Create Add on'),
-                                          content: Form(
-                                              key: key,
-                                              child: SizedBox(
-                                                height: 150,
-                                                child: Column(
-                                                  children: [
-                                                    TextFormField(
-                                                      validator: (value) => value!
-                                                              .isEmpty
-                                                          ? 'Please enter add on name'
-                                                          : null,
-                                                      controller:
-                                                          nameController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              hintText:
-                                                                  'Add on name'),
-                                                    ),
-                                                    TextFormField(
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      validator: priceValidator,
-                                                      controller:
-                                                          addOnPriceController,
-                                                      decoration:
-                                                          const InputDecoration(
-                                                              hintText:
-                                                                  'Add on Price'),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )),
-                                          actions: [
-                                            TextButton(
-                                              child: const Text('CANCEL'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: const Text('CREATE'),
-                                              onPressed: () async {
-                                                if (key.currentState!
-                                                    .validate()) {
-                                                  addOns[nameController.text] =
-                                                      int.parse(
-                                                          addOnPriceController
-                                                              .text);
-                                                  Navigator.of(context).pop();
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        );
+                                        return buildAddonCreate(
+                                            context, key, addOns);
                                       });
                                 },
                                 icon: const Icon(Icons.add),
@@ -335,151 +306,15 @@ class _AddItemPageState extends State<AddItemPage> {
                             ],
                           ),
 
-                          //Category List
-                          SizedBox(
-                            height: 300,
-                            child: ListView.builder(
-                              itemCount: max(addOns.length, 1),
-                              itemBuilder: (context, index) {
-                                return addOns.isEmpty
-                                    ? const SizedBox(
-                                        height: 300,
-                                        child:
-                                            Center(child: Text('No Add ons!')))
-                                    : Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        elevation: 5,
-                                        child: ListTile(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          ),
-                                          leading: SizedBox(
-                                            width: 20,
-                                            child: IconButton(
-                                              iconSize: 20,
-                                              onPressed: () {
-                                                final key =
-                                                    GlobalKey<FormState>();
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      final nameController =
-                                                          TextEditingController();
-                                                      final addOnPriceController =
-                                                          TextEditingController();
-                                                      nameController.text =
-                                                          addOns.keys
-                                                              .toList()[index];
-                                                      addOnPriceController
-                                                              .text =
-                                                          addOns.values
-                                                              .toList()[index]
-                                                              .toString();
-                                                      return AlertDialog(
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                        title: const Text(
-                                                            'Create Add on'),
-                                                        content: Form(
-                                                            key: key,
-                                                            child: SizedBox(
-                                                              height: 150,
-                                                              child: Column(
-                                                                children: [
-                                                                  TextFormField(
-                                                                    validator: (value) => value!
-                                                                            .isEmpty
-                                                                        ? 'Please enter add on name'
-                                                                        : null,
-                                                                    controller:
-                                                                        nameController,
-                                                                    decoration: const InputDecoration(
-                                                                        hintText:
-                                                                            'Add on name'),
-                                                                  ),
-                                                                  TextFormField(
-                                                                    keyboardType:
-                                                                        TextInputType
-                                                                            .number,
-                                                                    validator:
-                                                                        priceValidator,
-                                                                    controller:
-                                                                        addOnPriceController,
-                                                                    decoration: const InputDecoration(
-                                                                        hintText:
-                                                                            'Add on Price'),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            )),
-                                                        actions: [
-                                                          TextButton(
-                                                            child: const Text(
-                                                                'CANCEL'),
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                          ),
-                                                          TextButton(
-                                                            child: const Text(
-                                                                'EDIT'),
-                                                            onPressed:
-                                                                () async {
-                                                              if (key
-                                                                  .currentState!
-                                                                  .validate()) {
-                                                                addOns[nameController
-                                                                        .text] =
-                                                                    int.parse(
-                                                                        addOnPriceController
-                                                                            .text);
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              }
-                                                            },
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                              },
-                                              icon: const Icon(Icons.edit),
-                                            ),
-                                          ),
-                                          tileColor: Colors.white,
-                                          title: Text(
-                                            '${addOns.keys.toList()[index]}\nRs: ${addOns.values.toList()[index]}',
-                                          ),
-                                          trailing: IconButton(
-                                            onPressed: () async {
-                                              setState(() {
-                                                addOns.remove(addOns.keys
-                                                    .toList()[index]);
-                                              });
-                                            },
-                                            icon: const Icon(Icons.delete),
-                                          ),
-                                        ),
-                                      );
-                              },
-                            ),
-                          ),
+                          //Addon List
+                          buildAddOnList(context, addOns),
                         ],
                       ),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          fixedSize: const Size(150, 50),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                         ),
@@ -487,13 +322,32 @@ class _AddItemPageState extends State<AddItemPage> {
                           if (!_formKey.currentState!.validate()) {
                             return;
                           }
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await Db().addItemInRestaurant(
+                              AuthServices().auth.currentUser!.uid,
+                              imageFile!, {
+                            'name': itemNameController.text,
+                            'desc': descController.text,
+                            'price': double.parse(priceController.text),
+                            'category': selectedCategory,
+                            'addOns': addOns,
+                          });
+                          setState(() {
+                            isLoading = false;
+                          });
+                          Navigator.pop(context);
                         },
                         child: isLoading
                             ? const CircularProgressIndicator(
                                 strokeWidth: 1,
                                 color: Colors.white,
                               )
-                            : const Text('Save')),
+                            : const Text(
+                                'Create Item',
+                                style: TextStyle(fontSize: 15),
+                              )),
                   ],
                 ),
               )),
@@ -501,4 +355,154 @@ class _AddItemPageState extends State<AddItemPage> {
       ),
     );
   }
+}
+
+Widget buildAddOnList(BuildContext context, Map<String, int> addOns) {
+  return SizedBox(
+    height: 300,
+    child: ListView.builder(
+      itemCount: max(addOns.length, 1),
+      itemBuilder: (context, index) {
+        return addOns.isEmpty
+            ? const SizedBox(
+                height: 300, child: Center(child: Text('No Add ons!')))
+            : Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                elevation: 5,
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  leading: SizedBox(
+                    width: 20,
+                    child: IconButton(
+                      iconSize: 20,
+                      onPressed: () {
+                        final key = GlobalKey<FormState>();
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return buildEditAddon(
+                                  context, key, addOns, index);
+                            });
+                      },
+                      icon: const Icon(Icons.edit),
+                    ),
+                  ),
+                  tileColor: Colors.white,
+                  title: Text(
+                    '${addOns.keys.toList()[index]}\nRs: ${addOns.values.toList()[index]}',
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      addOns.remove(addOns.keys.toList()[index]);
+                    },
+                    icon: const Icon(Icons.delete),
+                  ),
+                ),
+              );
+      },
+    ),
+  );
+}
+
+Widget buildEditAddon(BuildContext context, GlobalKey<FormState> key,
+    Map<String, int> addOns, int index) {
+  final nameController = TextEditingController();
+  final addOnPriceController = TextEditingController();
+  nameController.text = addOns.keys.toList()[index];
+  addOnPriceController.text = addOns.values.toList()[index].toString();
+  return AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    title: const Text('Edit Add on'),
+    content: Form(
+        key: key,
+        child: SizedBox(
+          height: 150,
+          child: Column(
+            children: [
+              TextFormField(
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter add on name' : null,
+                controller: nameController,
+                decoration: const InputDecoration(hintText: 'Add on name'),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                validator: priceValidator,
+                controller: addOnPriceController,
+                decoration: const InputDecoration(hintText: 'Add on Price'),
+              ),
+            ],
+          ),
+        )),
+    actions: [
+      TextButton(
+        child: const Text('CANCEL'),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      TextButton(
+        child: const Text('EDIT'),
+        onPressed: () {
+          if (key.currentState!.validate()) {
+            addOns.remove(addOns.keys.toList()[index]);
+            addOns[nameController.text] = int.parse(addOnPriceController.text);
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    ],
+  );
+}
+
+Widget buildAddonCreate(
+    BuildContext context, GlobalKey<FormState> key, Map<String, int> addOns) {
+  final nameController = TextEditingController();
+  final addOnPriceController = TextEditingController();
+  return AlertDialog(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    title: const Text('Create Add on'),
+    content: Form(
+        key: key,
+        child: SizedBox(
+          height: 150,
+          child: Column(
+            children: [
+              TextFormField(
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter add on name' : null,
+                controller: nameController,
+                decoration: const InputDecoration(hintText: 'Add on name'),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.number,
+                validator: priceValidator,
+                controller: addOnPriceController,
+                decoration: const InputDecoration(hintText: 'Add on Price'),
+              ),
+            ],
+          ),
+        )),
+    actions: [
+      TextButton(
+        child: const Text('CANCEL'),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+      TextButton(
+        child: const Text('CREATE'),
+        onPressed: () async {
+          if (key.currentState!.validate()) {
+            addOns[nameController.text] = int.parse(addOnPriceController.text);
+            Navigator.of(context).pop();
+          }
+        },
+      ),
+    ],
+  );
 }

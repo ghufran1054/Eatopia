@@ -5,7 +5,6 @@ import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class UserMainHome extends StatefulWidget {
   const UserMainHome({super.key});
