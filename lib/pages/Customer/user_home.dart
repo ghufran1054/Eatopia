@@ -17,6 +17,7 @@ class _UserHomePageState extends State<UserHomePage> {
     const Text('More')
   ];
   int selectedIndex = 0;
+  final pageController = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,20 +45,29 @@ class _UserHomePageState extends State<UserHomePage> {
         ],
         currentIndex: selectedIndex,
         selectedItemColor: appGreen,
-        onTap: (index) => setState(() => selectedIndex = index),
+        onTap: (index) => setState(() {
+          selectedIndex = index;
+          pageController.animateToPage(index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut);
+        }),
       ),
       appBar: AppBar(
         elevation: 0,
         title: headings[selectedIndex],
         backgroundColor: appGreen,
       ),
-      body: [
-        const UserMainHome(),
-        const Center(
-          child: Text('Favourites'),
-        ),
-        const UserMore(),
-      ][selectedIndex],
+      body: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: pageController,
+        children: const [
+          UserMainHome(),
+          Center(
+            child: Text('Favourites'),
+          ),
+          UserMore(),
+        ],
+      ),
     );
   }
 }

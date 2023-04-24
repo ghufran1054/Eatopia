@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,5 +45,26 @@ class Db {
     await doc.update({
       "ImageURL": url,
     });
+  }
+
+  Future<List<Item>> getRestaurantItems(String resId) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('Restaurants')
+        .doc(resId)
+        .collection('Items')
+        .get();
+    List<Item> items = [];
+    for (var item in doc.docs) {
+      items.add(Item(
+        name: item['name'],
+        price: item['price'],
+        desc: item['desc'],
+        ImageURL: item['ImageURL'],
+        category: item['category'],
+        addOns: item['addOns'],
+      ));
+    }
+
+    return items;
   }
 }

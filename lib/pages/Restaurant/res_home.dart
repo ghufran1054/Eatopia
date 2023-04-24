@@ -24,6 +24,7 @@ class ResHome extends StatefulWidget {
 class _ResHomeState extends State<ResHome> {
   late Size scrSize;
   int selectedIndex = 0;
+  final PageController pageController = PageController();
   @override
   Widget build(BuildContext context) {
     scrSize = MediaQuery.of(context).size;
@@ -31,7 +32,12 @@ class _ResHomeState extends State<ResHome> {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
           currentIndex: selectedIndex,
-          onTap: (value) => setState(() => selectedIndex = value),
+          onTap: (value) => setState(() {
+                selectedIndex = value;
+                pageController.animateToPage(value,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut);
+              }),
           showUnselectedLabels: false,
           elevation: 5,
           backgroundColor: Colors.white,
@@ -63,31 +69,54 @@ class _ResHomeState extends State<ResHome> {
         ],
         title: const Text('Restaurant Home'),
       ),
-      body: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
-          child: ListView(
-            children: const [
-              //Restaurant Name Display
-              RestaurantNameWidget(),
-              SizedBox(height: 20),
-              AddDescriptionWidget(),
-              SizedBox(
-                height: 20,
-              ),
-              //Image Select Widget
-              ImageSelectWidget(),
-              SizedBox(height: 20),
-              //Category Container showing existing categories and add category button, remove the category, rename the category
-              CategoriesWidget(),
-            ],
-          ),
-        ),
+      body: PageView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: pageController,
+          children: const [
+            ResMainHome(),
 
-        const ResItemsPage(),
-        // const ResOrders(),
-        // const ResMore(),
-      ][selectedIndex],
+            ResItemsPage(),
+            // const ResOrders(),
+            // const ResMore(),
+          ]),
+    );
+  }
+}
+
+class ResMainHome extends StatefulWidget {
+  const ResMainHome({
+    super.key,
+  });
+
+  @override
+  State<ResMainHome> createState() => _ResMainHomeState();
+}
+
+class _ResMainHomeState extends State<ResMainHome>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
+      child: ListView(
+        children: const [
+          //Restaurant Name Display
+          RestaurantNameWidget(),
+          SizedBox(height: 20),
+          AddDescriptionWidget(),
+          SizedBox(
+            height: 20,
+          ),
+          //Image Select Widget
+          ImageSelectWidget(),
+          SizedBox(height: 20),
+          //Category Container showing existing categories and add category button, remove the category, rename the category
+          CategoriesWidget(),
+        ],
+      ),
     );
   }
 }

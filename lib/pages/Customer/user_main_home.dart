@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatopia/pages/Customer/user_res_page.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
@@ -13,10 +14,15 @@ class UserMainHome extends StatefulWidget {
   State<UserMainHome> createState() => _UserMainHomeState();
 }
 
-class _UserMainHomeState extends State<UserMainHome> {
+class _UserMainHomeState extends State<UserMainHome>
+    with AutomaticKeepAliveClientMixin {
   final searchController = TextEditingController();
+
+  @override
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final scrSize = MediaQuery.of(context).size;
     return Column(
       children: [
@@ -183,14 +189,15 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
 
                 return GestureDetector(
                   onTap: () {
-                    log(doc.id);
-                    Navigator.pushNamed(context, '/UserRestauarantPage',
-                        arguments: {
-                          'id': doc.id,
-                          'restaurant': doc['restaurant'],
-                          'image': doc['ImageURL'],
-                          'description': doc['description'],
-                        });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserRestauarantPage(data: {
+                                  'id': doc.id,
+                                  'restaurant': doc['restaurant'],
+                                  'image': doc['ImageURL'],
+                                  'description': doc['description'],
+                                })));
                   },
                   child: ImageTile(
                     heading: doc['restaurant'],

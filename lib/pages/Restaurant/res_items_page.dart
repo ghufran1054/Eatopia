@@ -101,6 +101,13 @@ class _AddItemPageState extends State<AddItemPage> {
   final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
   late File? imageFile = File('');
+
+  @override
+  void initState() {
+    super.initState();
+    selectedCategory = widget.categories[0];
+  }
+
   @override
   void dispose() {
     itemNameController.dispose();
@@ -109,7 +116,6 @@ class _AddItemPageState extends State<AddItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    selectedCategory = widget.categories[0];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Item'),

@@ -1,13 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 
+//Class For Item
+
 //THis is the Customer's view of the restaurant page
 
 class UserRestauarantPage extends StatefulWidget {
-  const UserRestauarantPage({super.key});
+  const UserRestauarantPage({super.key, required this.data});
+  final Map<String, dynamic> data;
 
   @override
   State<UserRestauarantPage> createState() => _UserRestauarantPageState();
@@ -17,13 +21,35 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
     with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   TabController? _tabController;
-  Map<String, dynamic>? data;
   double titleOpacity = 0;
+  List<String> categories = [];
+  List<Item> items = [];
+  bool isCtgLoading = true;
+  bool isItemLoading = true;
+
+  void getItems() async {
+    items = await Db().getRestaurantItems(widget.data['id']);
+
+    setState(() {
+      isItemLoading = false;
+    });
+  }
+
+  void getCategories() async {
+    categories = await Db().getRestaurantCategories(widget.data['id']);
+
+    setState(() {
+      isCtgLoading = false;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
     _tabController = TabController(length: 3, vsync: this);
+    getCategories();
+    getItems();
   }
 
   @override
@@ -54,7 +80,6 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
 
   @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     return Scaffold(
       body: NestedScrollView(
         controller: _scrollController,
@@ -64,7 +89,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
               title: Opacity(
                 opacity: titleOpacity,
                 child: Text(
-                  data!['restaurant'],
+                  widget.data['restaurant'],
                   style: const TextStyle(
                       color: Colors.black,
                       fontFamily: 'ubuntu-bold',
@@ -93,7 +118,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                 background: Column(
                   children: [
                     CachedNetworkImage(
-                      imageUrl: data!['image'],
+                      imageUrl: widget.data['image'],
                       imageBuilder: (context, imageProvider) => Container(
                         height: 200,
                         width: MediaQuery.of(context).size.width,
@@ -112,7 +137,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                           Expanded(
                             flex: 2,
                             child: Text(
-                              data!['restaurant'],
+                              widget.data['restaurant'],
                               style: const TextStyle(
                                   fontFamily: 'ubuntu-bold', fontSize: 20),
                             ),
@@ -133,7 +158,8 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                 preferredSize: const Size.fromHeight(70.0),
                 child: ResTabs(
                   tabController: _tabController!,
-                  id: data!['id'],
+                  isLoading: isCtgLoading,
+                  tabs: categories,
                 ),
               ),
             ),
@@ -180,34 +206,28 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
 }
 
 class ResTabs extends StatefulWidget {
-  const ResTabs({super.key, required this.tabController, required this.id});
+  const ResTabs(
+      {super.key,
+      required this.tabController,
+      required this.tabs,
+      required this.isLoading});
   final TabController tabController;
-  final String id;
+  final List<String> tabs;
+  final bool isLoading;
 
   @override
   State<ResTabs> createState() => _ResTabsState();
 }
 
 class _ResTabsState extends State<ResTabs> {
-  List<String> tabs = [];
-  bool isLoading = true;
-  void getCategories() async {
-    tabs = await Db().getRestaurantCategories(widget.id);
-
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    getCategories();
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
+    return widget.isLoading
         ? CustomShimmer(
             width: MediaQuery.of(context).size.width,
             height: 50,
@@ -233,7 +253,7 @@ class _ResTabsState extends State<ResTabs> {
                 ),
                 insets: const EdgeInsets.symmetric(horizontal: 16.0),
               ),
-              tabs: tabs
+              tabs: widget.tabs
                   .map(
                     (e) => Tab(
                       text: e,
