@@ -11,7 +11,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'pages/Customer/about_us.dart';
 import 'pages/Customer/user_home.dart';
 import 'pages/Customer/user_profile.dart';
-import 'pages/Restaurant/add_menu_items.dart';
 import 'pages/welcome_page.dart';
 import 'pages/Customer/Terms_policy.dart';
 
@@ -41,7 +40,6 @@ class MainApp extends StatelessWidget {
         '/LoginPage': (context) => const LoginPage(),
         '/BuisnessSignup': (context) => const BuisnessSignup(),
         '/ResHomePage': (context) => const ResHome(),
-        '/add_menu_items': (context) => const add_menu_items(),
         '/User_profile': (context) => const UserProfile(),
         '/Terms_policy': (context) => const Terms_policy(),
         '/About_us': (context) => const About_us(),

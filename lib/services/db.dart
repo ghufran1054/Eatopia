@@ -16,7 +16,7 @@ class Db {
     return ctgs;
   }
 
-  Future<void> addItemInRestaurant(
+  Future<Item> addItemInRestaurant(
       String uid, File imageFile, Map<String, dynamic> item) async {
     //This doc is the document reference of the item
     final doc = await FirebaseFirestore.instance
@@ -28,9 +28,17 @@ class Db {
     //If there is no image file then place null in imageURl
     if (imageFile.path.isEmpty) {
       await doc.update({
-        "ImageURL": null,
+        "ImageURL": '',
       });
-      return;
+      return Item(
+        itemId: doc.id,
+        name: item['name'],
+        price: item['price'],
+        desc: item['desc'],
+        ImageURL: '',
+        category: item['category'],
+        addOns: item['addOns'],
+      );
     }
     // Get the file extension from the file path
     final String fileExtension = p.extension(imageFile.path);
@@ -45,6 +53,16 @@ class Db {
     await doc.update({
       "ImageURL": url,
     });
+
+    return Item(
+      itemId: doc.id,
+      name: item['name'],
+      price: item['price'],
+      desc: item['desc'],
+      ImageURL: url,
+      category: item['category'],
+      addOns: item['addOns'],
+    );
   }
 
   Future<List<Item>> getRestaurantItems(String resId) async {
@@ -56,6 +74,7 @@ class Db {
     List<Item> items = [];
     for (var item in doc.docs) {
       items.add(Item(
+        itemId: item.id,
         name: item['name'],
         price: item['price'],
         desc: item['desc'],
@@ -66,5 +85,19 @@ class Db {
     }
 
     return items;
+  }
+
+  //This functions sets the Map with ctgs as keys and list of items as a value
+  Future<Map<String, List<Item>>> getCtgItems(String resId) async {
+    Map<String, List<Item>> ctgItems = {};
+    List<String> categories = await Db().getRestaurantCategories(resId);
+    List<Item> items = await Db().getRestaurantItems(resId);
+    for (var ctg in categories) {
+      ctgItems[ctg] = [];
+    }
+    for (var item in items) {
+      ctgItems[item.category]!.add(item);
+    }
+    return ctgItems;
   }
 }

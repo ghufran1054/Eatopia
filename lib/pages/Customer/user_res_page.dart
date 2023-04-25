@@ -19,37 +19,28 @@ class UserRestauarantPage extends StatefulWidget {
 
 class _UserRestauarantPageState extends State<UserRestauarantPage>
     with SingleTickerProviderStateMixin {
+  Map<String, List<Item>> ctgItems = {};
   final ScrollController _scrollController = ScrollController();
   TabController? _tabController;
   double titleOpacity = 0;
-  List<String> categories = [];
-  List<Item> items = [];
-  bool isCtgLoading = true;
-  bool isItemLoading = true;
 
-  void getItems() async {
-    items = await Db().getRestaurantItems(widget.data['id']);
+  bool isLoading = true;
 
+  //This functions sets the Map with ctgs as keys and list of items as a value
+  void getCtgItems() async {
+    ctgItems = await Db().getCtgItems(widget.data['id']);
     setState(() {
-      isItemLoading = false;
+      isLoading = false;
     });
-  }
 
-  void getCategories() async {
-    categories = await Db().getRestaurantCategories(widget.data['id']);
-
-    setState(() {
-      isCtgLoading = false;
-    });
+    _tabController = TabController(length: ctgItems.length, vsync: this);
   }
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    _tabController = TabController(length: 3, vsync: this);
-    getCategories();
-    getItems();
+    getCtgItems();
   }
 
   @override
@@ -157,22 +148,24 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(70.0),
                 child: ResTabs(
-                  tabController: _tabController!,
-                  isLoading: isCtgLoading,
-                  tabs: categories,
+                  tabController: _tabController,
+                  isLoading: isLoading,
+                  tabs: ctgItems.keys.toList(),
                 ),
               ),
             ),
           ];
         },
-        body: TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            _buildSection1Widget(),
-            _buildSection2Widget(),
-            _buildSection3Widget(),
-          ],
-        ),
+        body: isLoading
+            ? const CustomShimmer()
+            : TabBarView(
+                controller: _tabController,
+                children: <Widget>[
+                  _buildSection1Widget(),
+                  _buildSection2Widget(),
+                  _buildSection3Widget(),
+                ],
+              ),
       ),
     );
   }
@@ -211,7 +204,7 @@ class ResTabs extends StatefulWidget {
       required this.tabController,
       required this.tabs,
       required this.isLoading});
-  final TabController tabController;
+  final TabController? tabController;
   final List<String> tabs;
   final bool isLoading;
 
