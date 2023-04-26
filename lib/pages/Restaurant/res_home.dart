@@ -112,9 +112,6 @@ class _ResMainHomeState extends State<ResMainHome>
           ),
           //Image Select Widget
           ImageSelectWidget(),
-          SizedBox(height: 20),
-          //Category Container showing existing categories and add category button, remove the category, rename the category
-          CategoriesWidget(),
         ],
       ),
     );

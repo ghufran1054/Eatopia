@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/services/db.dart';
-import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'add_items.dart';
@@ -19,6 +18,19 @@ class _ResItemsPageState extends State<ResItemsPage>
     with AutomaticKeepAliveClientMixin {
   bool isLoading = true;
   Map<String, List<Item>> ctgItems = {};
+
+  Future<void> addCategory(String text) async {
+    final doc = FirebaseFirestore.instance
+        .collection('Restaurants')
+        .doc(AuthServices().auth.currentUser!.uid);
+    await doc.update({
+      "Categories": FieldValue.arrayUnion([text])
+    });
+
+    setState(() {
+      ctgItems[text] = [];
+    });
+  }
 
   void getCtgItems() async {
     ctgItems = await Db().getCtgItems(AuthServices().auth.currentUser!.uid);
@@ -43,98 +55,132 @@ class _ResItemsPageState extends State<ResItemsPage>
         ? CustomShimmer(
             height: MediaQuery.of(context).size.height,
           )
-        : Stack(
-            children: [
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(10),
-                child: ListView.builder(
-                    itemCount: ctgItems.keys.toList().length,
-                    itemBuilder: (context, index) {
-                      final ctg = ctgItems.keys.toList()[index];
-                      return ExpansionTile(
-                        backgroundColor: Colors.white,
-                        maintainState: true,
-                        title: Row(
-                          children: [
-                            Text(ctg,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: 'ubuntu-bold',
-                                  color: Colors.black,
-                                )),
-                            const Spacer(),
-                            IconButton(
-                                onPressed: () async {
-                                  await showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return buildEditCtg(
-                                            context, ctgItems, index);
-                                      });
-                                  setState(() {});
-                                },
-                                icon: const Icon(Icons.edit,
-                                    color: Colors.black)),
-                          ],
-                        ),
-                        children: ctgItems[ctg]!
-                            .map((item) => InkWell(
-                                onTap: () async {
-                                  List? result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditItemPage(
-                                                item: item,
-                                                categories:
-                                                    ctgItems.keys.toList(),
-                                              )));
-                                  if (result == null) {
-                                    return;
-                                  }
-                                  Item changedItem = result[0];
-                                  bool isDeleted = result[1];
-                                  if (!isDeleted) {
-                                    setState(() {
-                                      updateItem(changedItem);
-                                    });
-                                  } else {
-                                    setState(() {
-                                      ctgItems[changedItem.category]!
-                                          .removeWhere((element) =>
-                                              element.itemId ==
-                                              changedItem.itemId);
-                                    });
-                                  }
-                                },
-                                child: item.buildItemCard()))
-                            .toList(),
-                      );
-                    }),
-              ),
-              Positioned(
-                bottom: 20,
-                right: 20,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  foregroundColor: appGreen,
-                  onPressed: () async {
-                    Item? newItem = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddItemPage(
-                                  categories: ctgItems.keys.toList(),
-                                )));
-                    if (newItem != null) {
-                      setState(() {
-                        ctgItems[newItem.category]!.add(newItem);
-                      });
-                    }
-                  },
-                  child: const Icon(Icons.add),
-                ),
-              ),
-            ],
+        : Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(10),
+            child: ListView.builder(
+                itemCount: ctgItems.keys.toList().length + 1,
+                itemBuilder: (context, mainIdx) {
+                  if (mainIdx < 1) {
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                fixedSize:
+                                    Size(MediaQuery.of(context).size.width, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: buildCreateCtgAlert,
+                                );
+                              },
+                              child: const Text(
+                                'Create New Category',
+                                style: TextStyle(
+                                    fontFamily: 'ubuntu-bold',
+                                    color: Colors.black,
+                                    fontSize: 16),
+                              )),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                fixedSize:
+                                    Size(MediaQuery.of(context).size.width, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Item? newItem = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddItemPage(
+                                              categories:
+                                                  ctgItems.keys.toList(),
+                                            )));
+                                if (newItem != null) {
+                                  setState(() {
+                                    ctgItems[newItem.category]!.add(newItem);
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Add New Item',
+                                style: TextStyle(
+                                    fontFamily: 'ubuntu-bold',
+                                    color: Colors.black,
+                                    fontSize: 16),
+                              )),
+                        ],
+                      ),
+                    );
+                  }
+                  int index = mainIdx - 1;
+                  final ctg = ctgItems.keys.toList()[index];
+                  return ExpansionTile(
+                    backgroundColor: Colors.white,
+                    maintainState: true,
+                    title: Row(
+                      children: [
+                        Text(ctg,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'ubuntu-bold',
+                              color: Colors.black,
+                            )),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () async {
+                              await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return buildEditCtg(
+                                        context, ctgItems, index);
+                                  });
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.edit, color: Colors.black)),
+                      ],
+                    ),
+                    children: ctgItems[ctg]!
+                        .map((item) => InkWell(
+                            onTap: () async {
+                              List? result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditItemPage(
+                                            item: item,
+                                            categories: ctgItems.keys.toList(),
+                                          )));
+                              if (result == null) {
+                                return;
+                              }
+                              Item changedItem = result[0];
+                              bool isDeleted = result[1];
+                              if (!isDeleted) {
+                                setState(() {
+                                  updateItem(changedItem);
+                                });
+                              } else {
+                                setState(() {
+                                  ctgItems[changedItem.category]!.removeWhere(
+                                      (element) =>
+                                          element.itemId == changedItem.itemId);
+                                });
+                              }
+                            },
+                            child: item.buildItemCard()))
+                        .toList(),
+                  );
+                }),
           );
   }
 
@@ -145,6 +191,33 @@ class _ResItemsPageState extends State<ResItemsPage>
         break;
       }
     }
+  }
+
+  Widget buildCreateCtgAlert(BuildContext context) {
+    final categoryControl = TextEditingController();
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text('Create Category'),
+      content: TextField(
+        controller: categoryControl,
+        decoration: const InputDecoration(hintText: 'Category Name'),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('CANCEL'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: const Text('CREATE'),
+          onPressed: () async {
+            await addCategory(categoryControl.text);
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
   }
 }
 

@@ -95,47 +95,5 @@ class Item {
         ],
       ),
     );
-    //   return Card(
-    //     child: ListTile(
-
-    //       onTap: () {},
-    //       contentPadding: const EdgeInsets.all(10),
-    //       leading: CachedNetworkImage(
-    //         imageUrl: ImageURL,
-    //         cacheManager: CacheManager(Config(
-    //           ImageURL,
-    //           stalePeriod: const Duration(hours: 1),
-    //         )),
-    //         imageBuilder: (context, imageProvider) => Container(
-    //           decoration: BoxDecoration(
-    //             borderRadius: BorderRadius.circular(10),
-    //             image: DecorationImage(
-    //               image: imageProvider,
-    //               fit: BoxFit.fill,
-    //             ),
-    //           ),
-    //         ),
-    //         height: 60,
-    //         width: 70,
-    //         placeholder: (context, url) => const CustomShimmer(),
-    //         errorWidget: (context, url, error) => const Icon(Icons.error),
-    //       ),
-    //       title: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           Text(name),
-    //           Text(
-    //             desc,
-    //             style: const TextStyle(
-    //               fontSize: 12,
-    //               color: Colors.grey,
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //       trailing: Text('RS. ${price.toInt()}'),
-    //     ),
-    //   );
-    // }
   }
 }
