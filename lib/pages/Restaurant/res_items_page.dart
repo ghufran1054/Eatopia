@@ -6,6 +6,7 @@ import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'add_items.dart';
+import 'edit_item.dart';
 
 class ResItemsPage extends StatefulWidget {
   const ResItemsPage({super.key});
@@ -73,11 +74,40 @@ class _ResItemsPageState extends State<ResItemsPage>
                                       });
                                   setState(() {});
                                 },
-                                icon: Icon(Icons.edit, color: Colors.black)),
+                                icon: const Icon(Icons.edit,
+                                    color: Colors.black)),
                           ],
                         ),
                         children: ctgItems[ctg]!
-                            .map((item) => item.buildItemCard())
+                            .map((item) => InkWell(
+                                onTap: () async {
+                                  List? result = await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => EditItemPage(
+                                                item: item,
+                                                categories:
+                                                    ctgItems.keys.toList(),
+                                              )));
+                                  if (result == null) {
+                                    return;
+                                  }
+                                  Item changedItem = result[0];
+                                  bool isDeleted = result[1];
+                                  if (!isDeleted) {
+                                    setState(() {
+                                      updateItem(changedItem);
+                                    });
+                                  } else {
+                                    setState(() {
+                                      ctgItems[changedItem.category]!
+                                          .removeWhere((element) =>
+                                              element.itemId ==
+                                              changedItem.itemId);
+                                    });
+                                  }
+                                },
+                                child: item.buildItemCard()))
                             .toList(),
                       );
                     }),
@@ -106,6 +136,15 @@ class _ResItemsPageState extends State<ResItemsPage>
               ),
             ],
           );
+  }
+
+  void updateItem(Item changedItem) {
+    for (int i = 0; i < ctgItems[changedItem.category]!.length; i++) {
+      if (ctgItems[changedItem.category]![i].itemId == changedItem.itemId) {
+        ctgItems[changedItem.category]![i] = changedItem;
+        break;
+      }
+    }
   }
 }
 

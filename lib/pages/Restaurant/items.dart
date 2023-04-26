@@ -70,6 +70,7 @@ class Item {
               ],
             ),
           ),
+          const SizedBox(width: 5),
           CachedNetworkImage(
             imageUrl: ImageURL,
             cacheManager: CacheManager(Config(

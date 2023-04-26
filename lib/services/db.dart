@@ -16,6 +16,62 @@ class Db {
     return ctgs;
   }
 
+  Future<void> deleteItem(String uid, String itemId) async {
+    final doc = FirebaseFirestore.instance
+        .collection('Restaurants')
+        .doc(uid)
+        .collection('Items')
+        .doc(itemId);
+    await doc.delete();
+  }
+
+  Future<Item> updateItem(String uid, File imageFile, String itemId,
+      Map<String, dynamic> item) async {
+    //This doc is the document reference of the item
+    final doc = FirebaseFirestore.instance
+        .collection('Restaurants')
+        .doc(uid)
+        .collection('Items')
+        .doc(itemId);
+
+    //If there is no image file then just update with item Map
+    if (imageFile.path.isEmpty) {
+      await doc.update(item);
+      return Item(
+        itemId: doc.id,
+        name: item['name'],
+        price: item['price'],
+        desc: item['desc'],
+        ImageURL: item['ImageURL'],
+        category: item['category'],
+        addOns: item['addOns'],
+      );
+    }
+    // Get the file extension from the file path
+    final String fileExtension = p.extension(imageFile.path);
+    final ref = FirebaseStorage.instance
+        .ref()
+        .child('RestaurantImages/$uid/itemImages/${doc.id}$fileExtension');
+
+    final taskSnap = await ref.putFile(imageFile);
+    final url = await taskSnap.ref.getDownloadURL();
+
+    //Adding the image url to the database
+    await doc.update({
+      "ImageURL": url,
+    });
+
+    return Item(
+      itemId: doc.id,
+      name: item['name'],
+      price: item['price'],
+      desc: item['desc'],
+      ImageURL: url,
+      category: item['category'],
+      addOns: item['addOns'],
+    );
+  }
+
   Future<Item> addItemInRestaurant(
       String uid, File imageFile, Map<String, dynamic> item) async {
     //This doc is the document reference of the item

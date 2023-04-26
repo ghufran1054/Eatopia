@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/services/db.dart';
+import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../utilities/custom_text_field.dart';
@@ -23,37 +26,44 @@ String? priceValidator(String? value) {
   return null;
 }
 
-class AddItemPage extends StatefulWidget {
-  const AddItemPage({super.key, required this.categories});
+class EditItemPage extends StatefulWidget {
+  const EditItemPage({super.key, required this.categories, required this.item});
   final List<String> categories;
+  final Item item;
 
   @override
-  State<AddItemPage> createState() => _AddItemPageState();
+  State<EditItemPage> createState() => _EditItemPageState();
 }
 
-class _AddItemPageState extends State<AddItemPage> {
+class _EditItemPageState extends State<EditItemPage> {
   final itemNameController = TextEditingController();
   final descController = TextEditingController();
   final priceController = TextEditingController();
-  Map<String, int> addOns = {};
+  Map<String, dynamic> addOns = {};
 
   String selectedCategory = '';
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final picker = ImagePicker();
-  late File? imageFile = File('');
+  late File imageFile = File('');
+  String imageURL = '';
 
   @override
   void initState() {
     super.initState();
-    selectedCategory = widget.categories[0];
+    selectedCategory = widget.item.category;
+    itemNameController.text = widget.item.name;
+    descController.text = widget.item.desc;
+    priceController.text = widget.item.price.toString();
+    addOns = widget.item.addOns;
+    imageURL = widget.item.ImageURL;
   }
 
   @override
   void dispose() {
+    itemNameController.dispose();
     descController.dispose();
     priceController.dispose();
-    itemNameController.dispose();
     super.dispose();
   }
 
@@ -61,7 +71,7 @@ class _AddItemPageState extends State<AddItemPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Item'),
+        title: const Text('Edit Item'),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -72,6 +82,33 @@ class _AddItemPageState extends State<AddItemPage> {
                 padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                 child: Column(
                   children: [
+                    ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            fixedSize:
+                                Size(MediaQuery.of(context).size.width, 50)),
+                        onPressed: () async {
+                          bool result = await showDialog(
+                            context: context,
+                            builder: buildDeleteAlert,
+                          );
+                          if (result) {
+                            await Db().deleteItem(
+                                AuthServices().auth.currentUser!.uid,
+                                widget.item.itemId);
+                            Navigator.pop(context, [widget.item, true]);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: appRed,
+                        ),
+                        label: Text('Delete Item',
+                            style: TextStyle(color: appRed, fontSize: 18))),
+                    const SizedBox(height: 20),
                     const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -177,11 +214,7 @@ class _AddItemPageState extends State<AddItemPage> {
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: imageFile!.path.isEmpty
-                          ? const Center(
-                              child: Text('No image selected'),
-                            )
-                          : Image.file(imageFile!),
+                      child: buildEditImageWidget(imageFile, imageURL),
                     ),
                     const SizedBox(height: 20),
 
@@ -275,9 +308,10 @@ class _AddItemPageState extends State<AddItemPage> {
                             isLoading = true;
                           });
 
-                          Item item = await Db().addItemInRestaurant(
+                          Item item = await Db().updateItem(
                               AuthServices().auth.currentUser!.uid,
-                              imageFile!, {
+                              imageFile,
+                              widget.item.itemId, {
                             'name': itemNameController.text,
                             'desc': descController.text,
                             'price': double.parse(priceController.text),
@@ -288,7 +322,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             isLoading = false;
                           });
 
-                          Navigator.pop(context, item);
+                          Navigator.pop(context, [item, false]);
                         },
                         child: isLoading
                             ? const CircularProgressIndicator(
@@ -296,7 +330,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                 color: Colors.white,
                               )
                             : const Text(
-                                'Create Item',
+                                'Save Changes',
                                 style: TextStyle(fontSize: 15),
                               )),
                   ],
@@ -306,9 +340,44 @@ class _AddItemPageState extends State<AddItemPage> {
       ),
     );
   }
+
+  Widget buildDeleteAlert(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text('Delete Item'),
+      content: const Text('Are you sure you want to delete this item?'),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: const Text('Cancel')),
+        TextButton(
+            onPressed: () async {
+              Navigator.pop(context, true);
+            },
+            child: const Text('Delete')),
+      ],
+    );
+  }
 }
 
-Widget buildAddOnList(BuildContext context, Map<String, int> addOns) {
+Widget buildEditImageWidget(File imageFile, String imageURL) {
+  if (imageFile.path.isEmpty) {
+    return CachedNetworkImage(
+      imageUrl: imageURL,
+      cacheManager: CacheManager(Config(
+        imageURL,
+        stalePeriod: const Duration(hours: 2),
+      )),
+      placeholder: (context, url) => const CustomShimmer(),
+    );
+  } else {
+    return Image.file(imageFile);
+  }
+}
+
+Widget buildAddOnList(BuildContext context, Map<String, dynamic> addOns) {
   return SizedBox(
     height: 300,
     child: ListView.builder(
@@ -360,7 +429,7 @@ Widget buildAddOnList(BuildContext context, Map<String, int> addOns) {
 }
 
 Widget buildEditAddon(BuildContext context, GlobalKey<FormState> key,
-    Map<String, int> addOns, int index) {
+    Map<String, dynamic> addOns, int index) {
   final nameController = TextEditingController();
   final addOnPriceController = TextEditingController();
   nameController.text = addOns.keys.toList()[index];
@@ -410,8 +479,8 @@ Widget buildEditAddon(BuildContext context, GlobalKey<FormState> key,
   );
 }
 
-Widget buildAddonCreate(
-    BuildContext context, GlobalKey<FormState> key, Map<String, int> addOns) {
+Widget buildAddonCreate(BuildContext context, GlobalKey<FormState> key,
+    Map<String, dynamic> addOns) {
   final nameController = TextEditingController();
   final addOnPriceController = TextEditingController();
   return AlertDialog(
