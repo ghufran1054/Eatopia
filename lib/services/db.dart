@@ -11,7 +11,7 @@ class Db {
         .collection('Restaurants')
         .doc(uid)
         .get();
-    return (doc as Map<String, dynamic>).containsKey('isOpen')
+    return (doc.data() as Map<String, dynamic>).containsKey('isOpen')
         ? doc['isOpen']
         : false;
   }

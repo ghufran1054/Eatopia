@@ -129,6 +129,15 @@ class RestOpenToggle extends StatefulWidget {
 
 class _RestOpenToggleState extends State<RestOpenToggle> {
   bool isSwitched = false;
+  bool isLoading = true;
+  void loadStatus() async {
+    String uid = AuthServices().auth.currentUser!.uid;
+    bool status = await Db().getIsOpenStatus(uid);
+    setState(() {
+      isSwitched = status;
+      isLoading = false;
+    });
+  }
 
   Future<bool> _showConfirmationDialog(String text) async {
     return await showDialog(
@@ -157,6 +166,12 @@ class _RestOpenToggleState extends State<RestOpenToggle> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    loadStatus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -164,42 +179,44 @@ class _RestOpenToggleState extends State<RestOpenToggle> {
       height: 80,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              isSwitched
-                  ? 'Your Restaurant is Live !'
-                  : 'Your Restaurant is Closed',
-              style: const TextStyle(
-                  fontFamily: 'ubuntu-bold',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+      child: isLoading
+          ? const CustomShimmer()
+          : Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    isSwitched
+                        ? 'Your Restaurant is Live !'
+                        : 'Your Restaurant is Closed',
+                    style: const TextStyle(
+                        fontFamily: 'ubuntu-bold',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Spacer(),
+                Switch(
+                  onChanged: (value) async {
+                    bool confirm = await _showConfirmationDialog(isSwitched
+                        ? 'Are you Sure you want to Close Restaurant ?'
+                        : 'Are you Sure you want to Open Restaurant ?');
+                    if (confirm) {
+                      setState(() {
+                        isSwitched = value;
+                      });
+                      String uid = AuthServices().auth.currentUser!.uid;
+                      await Db().toggleOpenStatus(uid, value);
+                    }
+                  },
+                  value: isSwitched,
+                  activeColor: Colors.white,
+                  activeTrackColor: const Color.fromARGB(255, 58, 255, 67),
+                  inactiveThumbColor: Colors.white,
+                  inactiveTrackColor: Colors.red,
+                ),
+              ],
             ),
-          ),
-          const Spacer(),
-          Switch(
-            onChanged: (value) async {
-              bool confirm = await _showConfirmationDialog(isSwitched
-                  ? 'Are you Sure you want to Close Restaurant ?'
-                  : 'Are you Sure you want to Open Restaurant ?');
-              if (confirm) {
-                setState(() {
-                  isSwitched = value;
-                });
-                String uid = AuthServices().auth.currentUser!.uid;
-                await Db().toggleOpenStatus(uid, value);
-              }
-            },
-            value: isSwitched,
-            activeColor: Colors.white,
-            activeTrackColor: const Color.fromARGB(255, 58, 255, 67),
-            inactiveThumbColor: Colors.white,
-            inactiveTrackColor: Colors.red,
-          ),
-        ],
-      ),
     );
   }
 }
