@@ -186,29 +186,37 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 final doc = snapshot.data!.docs[index];
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserRestauarantPage(data: {
-                                  'id': doc.id,
-                                  'restaurant': doc['restaurant'],
-                                  'image': doc['ImageURL'],
-                                  'description': doc['description'],
-                                })));
-                  },
-                  child: ImageTile(
-                    heading: doc['restaurant'],
-                    description: (doc.data() as Map<String, dynamic>)
-                            .containsKey('description')
-                        ? doc['description']
-                        : '',
-                    image: (doc.data() as Map<String, dynamic>)
-                            .containsKey('ImageURL')
+                String resDesc = (doc.data() as Map<String, dynamic>)
+                        .containsKey('description')
+                    ? doc['description']
+                    : '';
+                String imageURL =
+                    (doc.data() as Map<String, dynamic>).containsKey('ImageURL')
                         ? doc['ImageURL']
-                        : '',
+                        : '';
+                bool isOpen =
+                    (doc.data() as Map<String, dynamic>).containsKey('isOpen')
+                        ? doc['isOpen']
+                        : false;
+                return Visibility(
+                  visible: isOpen,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserRestauarantPage(data: {
+                                    'id': doc.id,
+                                    'restaurant': doc['restaurant'],
+                                    'image': imageURL,
+                                    'description': resDesc,
+                                  })));
+                    },
+                    child: ImageTile(
+                      heading: doc['restaurant'],
+                      description: resDesc,
+                      image: imageURL,
+                    ),
                   ),
                 );
               },

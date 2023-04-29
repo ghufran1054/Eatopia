@@ -6,6 +6,20 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class Db {
   final db = FirebaseFirestore.instance;
+  Future<bool> getIsOpenStatus(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('Restaurants')
+        .doc(uid)
+        .get();
+    return (doc as Map<String, dynamic>).containsKey('isOpen')
+        ? doc['isOpen']
+        : false;
+  }
+
+  Future<void> toggleOpenStatus(String uid, bool isOpen) async {
+    final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
+    await doc.update({'isOpen': isOpen});
+  }
 
   Future<List<String>> getRestaurantCategories(String uid) async {
     final doc = await FirebaseFirestore.instance

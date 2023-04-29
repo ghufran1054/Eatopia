@@ -104,6 +104,8 @@ class _ResMainHomeState extends State<ResMainHome>
       child: ListView(
         children: const [
           //Restaurant Name Display
+          RestOpenToggle(),
+          SizedBox(height: 20),
           RestaurantNameWidget(),
           SizedBox(height: 20),
           AddDescriptionWidget(),
@@ -112,6 +114,90 @@ class _ResMainHomeState extends State<ResMainHome>
           ),
           //Image Select Widget
           ImageSelectWidget(),
+        ],
+      ),
+    );
+  }
+}
+
+class RestOpenToggle extends StatefulWidget {
+  const RestOpenToggle({super.key});
+
+  @override
+  State<RestOpenToggle> createState() => _RestOpenToggleState();
+}
+
+class _RestOpenToggleState extends State<RestOpenToggle> {
+  bool isSwitched = false;
+
+  Future<bool> _showConfirmationDialog(String text) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text("Confirm"),
+          content: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      width: MediaQuery.of(context).size.width,
+      height: 80,
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              isSwitched
+                  ? 'Your Restaurant is Live !'
+                  : 'Your Restaurant is Closed',
+              style: const TextStyle(
+                  fontFamily: 'ubuntu-bold',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          const Spacer(),
+          Switch(
+            onChanged: (value) async {
+              bool confirm = await _showConfirmationDialog(isSwitched
+                  ? 'Are you Sure you want to Close Restaurant ?'
+                  : 'Are you Sure you want to Open Restaurant ?');
+              if (confirm) {
+                setState(() {
+                  isSwitched = value;
+                });
+                String uid = AuthServices().auth.currentUser!.uid;
+                await Db().toggleOpenStatus(uid, value);
+              }
+            },
+            value: isSwitched,
+            activeColor: Colors.white,
+            activeTrackColor: const Color.fromARGB(255, 58, 255, 67),
+            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: Colors.red,
+          ),
         ],
       ),
     );
