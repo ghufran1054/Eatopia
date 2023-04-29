@@ -201,8 +201,14 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
                   },
                   child: ImageTile(
                     heading: doc['restaurant'],
-                    description: doc['description'],
-                    image: doc['ImageURL'],
+                    description: (doc.data() as Map<String, dynamic>)
+                            .containsKey('description')
+                        ? doc['description']
+                        : '',
+                    image: (doc.data() as Map<String, dynamic>)
+                            .containsKey('ImageURL')
+                        ? doc['ImageURL']
+                        : '',
                   ),
                 );
               },

@@ -113,7 +113,12 @@ class ImageTile extends StatelessWidget {
                 color: Colors.grey[100],
               ),
             )),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
+            errorWidget: (context, url, error) => Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.error)),
           ),
           const SizedBox(
             height: 10,

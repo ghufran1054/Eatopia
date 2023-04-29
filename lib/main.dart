@@ -7,6 +7,7 @@ import 'package:eatopia/pages/buisness_sign_up.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/firebase_options.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/Customer/about_us.dart';
 import 'pages/Customer/user_home.dart';
