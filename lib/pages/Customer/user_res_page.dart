@@ -102,7 +102,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                 ),
               ),
               backgroundColor: Colors.white,
-              expandedHeight: 350,
+              expandedHeight: 300.0 + widget.data['description'].length / 3,
               //floating: true,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
@@ -126,7 +126,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                       child: Row(
                         children: [
                           Expanded(
-                            flex: 2,
+                            flex: 10,
                             child: Text(
                               widget.data['restaurant'],
                               style: const TextStyle(
@@ -137,9 +137,19 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                           TextButton(
                               onPressed: () {},
                               child: const Text(
-                                'Reviews',
+                                'Reviews & Info',
                               )),
                         ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          widget.data['description'],
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                       ),
                     ),
                   ],
@@ -160,40 +170,12 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
             ? const CustomShimmer()
             : TabBarView(
                 controller: _tabController,
-                children: <Widget>[
-                  _buildSection1Widget(),
-                  _buildSection2Widget(),
-                  _buildSection3Widget(),
-                ],
+                children: ctgItems.keys
+                    .toList()
+                    .map((e) => ItemList(itemList: ctgItems[e]!))
+                    .toList(),
               ),
       ),
-    );
-  }
-
-  Widget _buildSection1Widget() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(title: Text('Section 1 Item $index'));
-      },
-    );
-  }
-
-  Widget _buildSection2Widget() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(title: Text('Section 2 Item $index'));
-      },
-    );
-  }
-
-  Widget _buildSection3Widget() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (BuildContext context, int index) {
-        return ListTile(title: Text('Section 3 Item $index'));
-      },
     );
   }
 }
@@ -255,5 +237,37 @@ class _ResTabsState extends State<ResTabs> {
                   .toList(),
             ),
           );
+  }
+}
+
+class ItemList extends StatefulWidget {
+  const ItemList({super.key, required this.itemList});
+  final List<Item> itemList;
+
+  @override
+  State<ItemList> createState() => _ItemListState();
+}
+
+class _ItemListState extends State<ItemList>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      child: ListView.builder(
+        itemCount: widget.itemList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return widget.itemList[index].buildItemCard();
+        },
+      ),
+    );
   }
 }
