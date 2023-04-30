@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/services/db.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -367,10 +368,7 @@ Widget buildEditImageWidget(File imageFile, String imageURL) {
   if (imageFile.path.isEmpty) {
     return CachedNetworkImage(
       imageUrl: imageURL,
-      cacheManager: CacheManager(Config(
-        imageURL,
-        stalePeriod: const Duration(hours: 2),
-      )),
+      cacheManager: appCacheManager,
       placeholder: (context, url) => const CustomShimmer(),
     );
   } else {

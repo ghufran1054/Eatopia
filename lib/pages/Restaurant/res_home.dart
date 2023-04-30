@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/services/db.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 
 import 'package:eatopia/utilities/custom_shimmer.dart';
 
@@ -555,13 +556,7 @@ class _ImageSelectWidgetState extends State<ImageSelectWidget> {
                       child: const Text('Upload a Photo'),
                     ))
                   : CachedNetworkImage(
-                      cacheManager: CacheManager(
-                        Config(
-                          AuthServices().auth.currentUser!.uid,
-                          stalePeriod: const Duration(days: 3),
-                          maxNrOfCacheObjects: 20,
-                        ),
-                      ),
+                      cacheManager: appCacheManager,
                       imageUrl: imageURL!,
                       placeholder: (context, url) => CustomShimmer(
                         height: 150,

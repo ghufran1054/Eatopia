@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
@@ -90,11 +91,7 @@ class ImageTile extends StatelessWidget {
         children: [
           CachedNetworkImage(
             imageUrl: image,
-            cacheManager: CacheManager(Config(
-              image,
-              stalePeriod: const Duration(days: 3),
-              maxNrOfCacheObjects: 100,
-            )),
+            cacheManager: appCacheManager,
             imageBuilder: (context, imageProvider) => Container(
               height: 100,
               decoration: BoxDecoration(

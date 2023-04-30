@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +24,7 @@ class _ItemDescPageState extends State<ItemDescPage> {
         child: Stack(children: [
           CachedNetworkImage(
             imageUrl: widget.item.ImageURL,
-            cacheManager: CacheManager(Config(
-              widget.item.ImageURL,
-              stalePeriod: const Duration(hours: 1),
-            )),
+            cacheManager: appCacheManager,
             imageBuilder: (context, imageProvider) => Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Customer/item_desc_page.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/db.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                   children: [
                     CachedNetworkImage(
                       imageUrl: widget.data['image'],
+                      cacheManager: appCacheManager,
                       imageBuilder: (context, imageProvider) => Container(
                         height: 200,
                         width: MediaQuery.of(context).size.width,

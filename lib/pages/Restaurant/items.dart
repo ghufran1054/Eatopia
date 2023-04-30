@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -73,10 +74,7 @@ class Item {
           const SizedBox(width: 5),
           CachedNetworkImage(
             imageUrl: ImageURL,
-            cacheManager: CacheManager(Config(
-              ImageURL,
-              stalePeriod: const Duration(hours: 1),
-            )),
+            cacheManager: appCacheManager,
             imageBuilder: (context, imageProvider) => Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
