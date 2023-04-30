@@ -9,13 +9,25 @@ class Db {
 
   Future<List<QueryDocumentSnapshot>> searchRestauarants(String query) async {
     query = query.toLowerCase();
-    final result = await db
+
+    //Gets Restaurants that start with the query
+    final resultPrefixed = await db
         .collection('Restaurants')
         .where('restaurantLower', isGreaterThanOrEqualTo: query)
         .where('restaurantLower', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
 
-    return result.docs;
+    final resultContains = await db
+        .collection('Restaurants')
+        .where('restaurantArray', arrayContains: query)
+        .get();
+
+    //Remove Common elements from the two lists
+    final docs = resultPrefixed.docs;
+    docs.removeWhere((element) => resultContains.docs
+        .any((element2) => element['restaurant'] == element2['restaurant']));
+
+    return [...docs, ...resultContains.docs];
   }
 
   Future<bool> getIsOpenStatus(String uid) async {
@@ -55,6 +67,7 @@ class Db {
       Map<String, dynamic> item) async {
     //This doc is the document reference of the item
     item['nameLower'] = item['name'].toString().toLowerCase();
+    item['nameArray'] = item['nameLower'].toString().split(RegExp(r'[\s,-]'));
     final doc = FirebaseFirestore.instance
         .collection('Restaurants')
         .doc(uid)
@@ -102,6 +115,7 @@ class Db {
   Future<Item> addItemInRestaurant(
       String uid, File imageFile, Map<String, dynamic> item) async {
     item['nameLower'] = item['name'].toString().toLowerCase();
+    item['nameArray'] = item['nameLower'].toString().split(RegExp(r'[\s,-]'));
     //This doc is the document reference of the item
     final doc = await FirebaseFirestore.instance
         .collection('Restaurants')

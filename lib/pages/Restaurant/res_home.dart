@@ -357,8 +357,13 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
     final String uid = AuthServices().auth.currentUser!.uid;
     final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
     final String lower = resName.toLowerCase();
+    List<String> split = lower.split(RegExp(r'[\s,-]'));
 
-    await doc.update({"restaurant": resName, "restaurantLower": lower});
+    await doc.update({
+      "restaurant": resName,
+      "restaurantLower": lower,
+      "restaurantArray": split
+    });
 
     setState(() {});
   }

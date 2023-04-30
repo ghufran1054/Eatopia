@@ -29,6 +29,9 @@ class AuthServices {
   //Recieves the Restaurant information Map
   Future<void> addRestaurant(Map<String, dynamic> data) async {
     data['restaurantLower'] = data['restauarant'].toString().toLowerCase();
+    //Split the restaurant name into an array of words sepertaed by spaces, commas, dashes
+    data['restaurantArray'] =
+        data['restauarantLower'].toString().split(RegExp(r'[\s,-]'));
     await db.collection('Restaurants').doc(auth.currentUser!.uid).set(data);
   }
 
