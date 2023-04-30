@@ -317,6 +317,7 @@ class _EditItemPageState extends State<EditItemPage> {
                             'price': double.parse(priceController.text),
                             'category': selectedCategory,
                             'addOns': addOns,
+                            'ImageURL': imageURL,
                           });
                           setState(() {
                             isLoading = false;

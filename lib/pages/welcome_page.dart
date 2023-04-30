@@ -75,14 +75,11 @@ class WelcomePage extends StatelessWidget {
               ),
             ),
             Container(
-              width: 200,
-              height: 1.2,
+              width: 250,
+              height: 3,
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[350],
+                borderRadius: BorderRadius.circular(50),
               ),
             ),
             const SizedBox(

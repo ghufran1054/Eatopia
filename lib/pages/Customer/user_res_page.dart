@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eatopia/pages/Customer/item_desc_page.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
@@ -265,7 +266,18 @@ class _ItemListState extends State<ItemList>
       child: ListView.builder(
         itemCount: widget.itemList.length,
         itemBuilder: (BuildContext context, int index) {
-          return widget.itemList[index].buildItemCard();
+          return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ItemDescPage(
+                      item: widget.itemList[index],
+                    ),
+                  ),
+                );
+              },
+              child: widget.itemList[index].buildItemCard());
         },
       ),
     );

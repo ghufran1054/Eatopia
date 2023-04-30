@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
 
+import 'search_page.dart';
+
 class UserMainHome extends StatefulWidget {
   const UserMainHome({super.key});
 
@@ -16,8 +18,6 @@ class UserMainHome extends StatefulWidget {
 
 class _UserMainHomeState extends State<UserMainHome>
     with AutomaticKeepAliveClientMixin {
-  final searchController = TextEditingController();
-
   @override
   bool get wantKeepAlive => true;
   @override
@@ -45,8 +45,13 @@ class _UserMainHomeState extends State<UserMainHome>
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: TextField(
+              readOnly: true,
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const SearchPage();
+                }));
+              },
               cursorColor: Colors.black,
-              controller: searchController,
               decoration: const InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -55,19 +60,7 @@ class _UserMainHomeState extends State<UserMainHome>
                 prefixIconColor: Colors.black,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white, width: 2),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
+                    Radius.circular(30),
                   ),
                 ),
               ),
