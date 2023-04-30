@@ -4,7 +4,6 @@ import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class ItemDescPage extends StatefulWidget {
   const ItemDescPage({super.key, required this.item});

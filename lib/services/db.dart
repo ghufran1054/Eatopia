@@ -6,6 +6,18 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class Db {
   final db = FirebaseFirestore.instance;
+
+  Future<List<QueryDocumentSnapshot>> searchRestauarants(String query) async {
+    query = query.toLowerCase();
+    final result = await db
+        .collection('Restaurants')
+        .where('restaurantLower', isGreaterThanOrEqualTo: query)
+        .where('restaurantLower', isLessThanOrEqualTo: '$query\uf8ff')
+        .get();
+
+    return result.docs;
+  }
+
   Future<bool> getIsOpenStatus(String uid) async {
     final doc = await FirebaseFirestore.instance
         .collection('Restaurants')
@@ -42,6 +54,7 @@ class Db {
   Future<Item> updateItem(String uid, File imageFile, String itemId,
       Map<String, dynamic> item) async {
     //This doc is the document reference of the item
+    item['nameLower'] = item['name'].toString().toLowerCase();
     final doc = FirebaseFirestore.instance
         .collection('Restaurants')
         .doc(uid)
@@ -88,6 +101,7 @@ class Db {
 
   Future<Item> addItemInRestaurant(
       String uid, File imageFile, Map<String, dynamic> item) async {
+    item['nameLower'] = item['name'].toString().toLowerCase();
     //This doc is the document reference of the item
     final doc = await FirebaseFirestore.instance
         .collection('Restaurants')

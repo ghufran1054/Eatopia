@@ -28,6 +28,7 @@ class AuthServices {
 
   //Recieves the Restaurant information Map
   Future<void> addRestaurant(Map<String, dynamic> data) async {
+    data['restaurantLower'] = data['restauarant'].toString().toLowerCase();
     await db.collection('Restaurants').doc(auth.currentUser!.uid).set(data);
   }
 

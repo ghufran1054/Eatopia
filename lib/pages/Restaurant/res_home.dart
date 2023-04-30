@@ -6,7 +6,6 @@ import 'package:eatopia/utilities/cache_manger.dart';
 
 import 'package:eatopia/utilities/custom_shimmer.dart';
 
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/services/auth_services.dart';
@@ -357,8 +356,9 @@ class _RestaurantNameWidgetState extends State<RestaurantNameWidget> {
   Future<void> changeResName() async {
     final String uid = AuthServices().auth.currentUser!.uid;
     final doc = FirebaseFirestore.instance.collection('Restaurants').doc(uid);
+    final String lower = resName.toLowerCase();
 
-    await doc.update({"restaurant": resName});
+    await doc.update({"restaurant": resName, "restaurantLower": lower});
 
     setState(() {});
   }

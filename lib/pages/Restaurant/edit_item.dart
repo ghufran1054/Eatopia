@@ -8,7 +8,6 @@ import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../utilities/custom_text_field.dart';
