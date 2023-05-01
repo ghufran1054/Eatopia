@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:eatopia/pages/Restaurant/items.dart';
+import 'package:eatopia/pages/Restaurant/search_result_class.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,27 +8,68 @@ import 'package:firebase_storage/firebase_storage.dart';
 class Db {
   final db = FirebaseFirestore.instance;
 
-  Future<List<QueryDocumentSnapshot>> searchRestauarants(String query) async {
+  Future<List<SearchResult>> searchRestauarants(String query) async {
     query = query.toLowerCase();
+    //item collection ref
+    final itemCollectionRef = db.collectionGroup('Items');
+    final itemQuerySnapshot = await itemCollectionRef
+        .where('nameArray', arrayContainsAny: query.split(RegExp(r'[\s,-]')))
+        .get();
+
+    Map<String, SearchResult> restContainingItem = {};
+
+    for (final itemDoc in itemQuerySnapshot.docs) {
+      final restDoc = await itemDoc.reference.parent.parent!.get();
+      final restName = restDoc['restaurant'];
+      if (!restContainingItem.containsKey(restName)) {
+        Map<String, dynamic> restDocData = restDoc.data()!;
+        restDocData['id'] = restDoc.id;
+        restContainingItem[restName] =
+            SearchResult(restDoc: restDocData, items: []);
+      }
+      restContainingItem[restName]!.items.add(Item(
+            itemId: itemDoc.id,
+            name: itemDoc['name'],
+            price: itemDoc['price'],
+            desc: itemDoc['desc'],
+            ImageURL: itemDoc['ImageURL'],
+            addOns: itemDoc['addOns'],
+            category: itemDoc['category'],
+          ));
+    }
 
     //Gets Restaurants that start with the query
-    final resultPrefixed = await db
-        .collection('Restaurants')
-        .where('restaurantLower', isGreaterThanOrEqualTo: query)
-        .where('restaurantLower', isLessThanOrEqualTo: '$query\uf8ff')
-        .get();
+    // final resultPrefixed = await db
+    //     .collection('Restaurants')
+    //     .where('restaurantLower', isGreaterThanOrEqualTo: query)
+    //     .where('restaurantLower', isLessThanOrEqualTo: '$query\uf8ff')
+    //     .get();
 
     final resultContains = await db
         .collection('Restaurants')
-        .where('restaurantArray', arrayContains: query)
+        .where('restaurantArray',
+            arrayContainsAny: query.split(RegExp(r'[\s,-]')))
         .get();
 
-    //Remove Common elements from the two lists
-    final docs = resultPrefixed.docs;
-    docs.removeWhere((element) => resultContains.docs
-        .any((element2) => element['restaurant'] == element2['restaurant']));
+    // for (final doc in resultPrefixed.docs) {
+    //   final restName = doc['restaurant'];
+    //   if (!restContainingItem.containsKey(restName)) {
+    //     Map<String, dynamic> restDocData = doc.data();
+    //     restDocData['id'] = doc.id;
+    //     restContainingItem[restName] =
+    //         SearchResult(restDoc: restDocData, items: []);
+    //   }
+    // }
 
-    return [...docs, ...resultContains.docs];
+    for (final doc in resultContains.docs) {
+      final restName = doc['restaurant'];
+      if (!restContainingItem.containsKey(restName)) {
+        restContainingItem[restName] =
+            SearchResult(restDoc: doc.data(), items: []);
+      }
+    }
+
+    return restContainingItem.values.toList();
   }
 
   Future<bool> getIsOpenStatus(String uid) async {
