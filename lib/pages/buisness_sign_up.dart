@@ -3,9 +3,6 @@ import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../services/auth_services.dart';
 
 ////IN FIRST PAGE WE WILL GET THE EMAIL AND PASSWORD AND VERIFY IF THE USER EXISTS OR NOT
@@ -212,10 +209,10 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                                   color: Colors.black,
                                 ),
                                 labelText: 'Address',
-                                hintText: 'Enter your address',
+                                hintText: 'Select your address',
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return 'Please enter your address';
+                                    return 'Please Select your address';
                                   }
                                   return null;
                                 },
@@ -226,6 +223,12 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                           ],
                         )),
                     ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            elevation: 3,
+                            backgroundColor: Colors.white,
+                            fixedSize: const Size(210, 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0))),
                         onPressed: () async {
                           String? locTxt = await Navigator.push(
                               context,
@@ -237,7 +240,11 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                             });
                           }
                         },
-                        child: const Text('Select Location from Maps')),
+                        child: Text(
+                          'Select Location from Maps',
+                          style: TextStyle(
+                              color: appGreen, fontFamily: 'ubuntu-bold'),
+                        )),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       style: ButtonStyle(

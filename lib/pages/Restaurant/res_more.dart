@@ -1,4 +1,6 @@
 import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/db.dart';
+import 'package:eatopia/services/maps.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +66,21 @@ class _ResMoreState extends State<ResMore> {
                     await AuthServices().auth.signOut();
                     Navigator.pushReplacementNamed(context, '/WelcomePage');
                   } else if (value[index] == 'Address') {
-                    Navigator.pushNamed(context, '/MapScreen');
+                    String? locTxt = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MapScreen()));
+                    if (locTxt != null) {
+                      await Db().updateRestaurantAddress(
+                          AuthServices().auth.currentUser!.uid, locTxt);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: appGreen,
+                          content: const Text('Address Updated !'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   }
                 },
               ),

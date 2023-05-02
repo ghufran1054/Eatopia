@@ -1,4 +1,3 @@
-import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 
 class Terms_policy extends StatefulWidget {
@@ -13,14 +12,14 @@ class _Terms_policyState extends State<Terms_policy> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Terms and Policy'),
+        title: const Text('Terms and Policy'),
       ),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: const <Widget>[
               Text(
                 'Terms of Service',
                 style: TextStyle(

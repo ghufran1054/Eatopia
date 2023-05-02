@@ -1,4 +1,5 @@
 import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/maps.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -318,16 +319,17 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
 
                         //Address Text Field
                         CustomTextField(
+                            readOnly: true,
                             inputType: TextInputType.streetAddress,
                             icon: const Icon(
                               Icons.location_on,
                               color: Colors.black,
                             ),
                             labelText: 'Address',
-                            hintText: 'Enter your address',
+                            hintText: 'Select your address',
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter your address';
+                                return 'Please Select your address';
                               }
                               return null;
                             },
@@ -337,6 +339,30 @@ class _UserSignUpPageTwoState extends State<UserSignUpPageTwo> {
                         const SizedBox(height: 10),
                       ],
                     )),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 3,
+                        backgroundColor: Colors.white,
+                        fixedSize: const Size(210, 50),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                    onPressed: () async {
+                      String? locTxt = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MapScreen()));
+                      if (locTxt != null) {
+                        setState(() {
+                          addressController.text = locTxt;
+                        });
+                      }
+                    },
+                    child: Text(
+                      'Select Location from Maps',
+                      style:
+                          TextStyle(color: appGreen, fontFamily: 'ubuntu-bold'),
+                    )),
+                const SizedBox(height: 20),
                 ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor:

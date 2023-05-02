@@ -12,6 +12,10 @@ class Db {
     await db.collection('Customers').doc(uid).update({'stAddress': add});
   }
 
+  Future<void> updateRestaurantAddress(String uid, String add) async {
+    await db.collection('Restaurants').doc(uid).update({'address': add});
+  }
+
   Future<List<SearchResult>> searchRestauarants(String query) async {
     query = query.toLowerCase();
     //item collection ref

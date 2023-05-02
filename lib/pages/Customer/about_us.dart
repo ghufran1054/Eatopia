@@ -1,4 +1,3 @@
-import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 
 class About_us extends StatefulWidget {
@@ -13,14 +12,14 @@ class _About_usState extends State<About_us> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('About Us'),
+          title: const Text('About Us'),
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: const [
                 Center(
                   child: Text(
                     'Welcome to Eatopia',

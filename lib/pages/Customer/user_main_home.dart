@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/pages/Customer/user_res_page.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';

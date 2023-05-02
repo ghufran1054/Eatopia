@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/pages/Restaurant/search_result_class.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/cache_manger.dart';

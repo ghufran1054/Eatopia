@@ -107,7 +107,14 @@ class _MapScreenState extends State<MapScreen> {
               ),
               backgroundColor: appGreen,
             ),
-            onPressed: () {
+            onPressed: () async {
+              List<Placemark> place = await placemarkFromCoordinates(
+                  _marker.position.latitude, _marker.position.longitude);
+
+              setState(() {
+                locTxt =
+                    '${place[0].street}, ${place[0].subLocality}, ${place[0].subAdministrativeArea}';
+              });
               Navigator.pop(context, locTxt);
             },
             child: const Text(
