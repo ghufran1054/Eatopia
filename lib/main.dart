@@ -14,6 +14,7 @@ import 'pages/Customer/user_home.dart';
 import 'pages/Customer/user_profile.dart';
 import 'pages/welcome_page.dart';
 import 'pages/Customer/Terms_policy.dart';
+import 'package:eatopia/pages/Restaurant/res_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +45,7 @@ class MainApp extends StatelessWidget {
         '/User_profile': (context) => const UserProfile(),
         '/Terms_policy': (context) => const Terms_policy(),
         '/About_us': (context) => const About_us(),
+        '/Res_profile': (context) => const ResProfile(),
       },
       theme: ThemeData(
         fontFamily: 'ubuntu',

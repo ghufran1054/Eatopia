@@ -3,6 +3,62 @@ import 'package:eatopia/services/db.dart';
 import 'package:eatopia/services/maps.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class PopupDialog extends StatelessWidget {
+  const PopupDialog({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        'You are not currently signed in !',
+        style: TextStyle(
+          fontSize: 20.0,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const Text(
+              'Please Login or Create an account to access this feature \n',
+              style: TextStyle(
+                fontSize: 16.0,
+              )),
+          ElevatedButton(
+            child: Text('Sign Up'),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/UserSignUpPageOne');
+            },
+            style: ElevatedButton.styleFrom(
+              fixedSize: const Size(200, 40),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+              // change background color of button
+              backgroundColor: appGreen, // change text color of button
+            ),
+          ),
+          ElevatedButton(
+            child: Text('Login'),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/LoginPage');
+            },
+            style: ElevatedButton.styleFrom(
+              fixedSize: const Size(200, 40),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              foregroundColor: const Color.fromARGB(255, 255, 255, 255),
+              // change background color of button
+              backgroundColor: appGreen, // change text color of button
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class UserMore extends StatefulWidget {
   const UserMore({super.key});
@@ -59,7 +115,17 @@ class _UserMoreState extends State<UserMore> {
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () async {
                   if (value[index] == 'Profile') {
-                    Navigator.pushNamed(context, '/User_profile');
+                    User? user = FirebaseAuth.instance.currentUser;
+                    if (user == null) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return PopupDialog();
+                        },
+                      );
+                    } else if (user != null) {
+                      Navigator.pushNamed(context, '/User_profile');
+                    }
                   } else if (value[index] == 'Create Business Account') {
                     Navigator.pushNamed(context, '/BuisnessSignup');
                   } else if (value[index] == 'Terms and Policies') {
