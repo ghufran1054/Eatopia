@@ -1,4 +1,5 @@
 import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +69,19 @@ class _UserMoreState extends State<UserMore> {
                     await AuthServices().auth.signOut();
                     Navigator.pushNamed(context, '/WelcomePage');
                   } else if (value[index] == 'Address') {
-                    Navigator.pushNamed(context, '/MapScreen');
+                    String? locTxt =
+                        await Navigator.pushNamed(context, '/MapScreen');
+                    if (locTxt != null &&
+                        AuthServices().auth.currentUser != null) {
+                      await Db().updateUserAddress(
+                          AuthServices().auth.currentUser!.uid, locTxt);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Address Updated!'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   }
                 },
               ),

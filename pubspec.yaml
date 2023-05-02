@@ -27,6 +27,8 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.3
   shimmer_animation: ^2.1.0+1
+  uuid: ^3.0.7
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,10 @@
+import 'package:eatopia/services/maps.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../services/auth_services.dart';
 
@@ -202,6 +205,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
 
                             //Address Text Field
                             CustomTextField(
+                                readOnly: true,
                                 inputType: TextInputType.streetAddress,
                                 icon: const Icon(
                                   Icons.location_on,
@@ -221,6 +225,20 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                             const SizedBox(height: 10),
                           ],
                         )),
+                    ElevatedButton(
+                        onPressed: () async {
+                          String? locTxt = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MapScreen()));
+                          if (locTxt != null) {
+                            setState(() {
+                              addressController.text = locTxt;
+                            });
+                          }
+                        },
+                        child: const Text('Select Location from Maps')),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor:
@@ -261,6 +279,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                                   content: Text('Email already in use')));
                           return;
                         }
+
                         await AuthServices().signUpwithEmail(
                             emailController.text, passwordController.text);
 

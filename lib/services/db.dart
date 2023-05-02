@@ -8,6 +8,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 class Db {
   final db = FirebaseFirestore.instance;
 
+  Future<void> updateUserAddress(String uid, String add) async {
+    await db.collection('Customers').doc(uid).update({'stAddress': add});
+  }
+
   Future<List<SearchResult>> searchRestauarants(String query) async {
     query = query.toLowerCase();
     //item collection ref

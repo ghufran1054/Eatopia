@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class MapScreen extends StatefulWidget {
   @override
@@ -20,6 +25,8 @@ class _MapScreenState extends State<MapScreen> {
     markerId: const MarkerId('Current Location'),
     position: _markerLocation,
   );
+
+  String locTxt = '';
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -71,7 +78,12 @@ class _MapScreenState extends State<MapScreen> {
         title: 'Current Location',
       ),
     );
+    List<Placemark> place =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
     setState(() {
+      locTxt =
+          '${place[0].street}, ${place[0].subLocality}, ${place[0].subAdministrativeArea}';
       isLoading = false;
     });
   }
@@ -95,7 +107,9 @@ class _MapScreenState extends State<MapScreen> {
               ),
               backgroundColor: appGreen,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context, locTxt);
+            },
             child: const Text(
               'Confirm Location',
               style: TextStyle(
@@ -104,9 +118,60 @@ class _MapScreenState extends State<MapScreen> {
             ))
       ],
       appBar: AppBar(
-        title: const Text('Select your Location'),
-        backgroundColor: appGreen,
-      ),
+          title: const Text('Select your Location'),
+          backgroundColor: appGreen,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                readOnly: true,
+                onTap: () async {
+                  String? locStr = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MapSearchPage(),
+                    ),
+                  );
+                  if (locStr != null) {
+                    List<Location> locations =
+                        await locationFromAddress(locStr);
+                    LatLng loc =
+                        LatLng(locations[0].latitude, locations[0].longitude);
+                    locTxt = locStr;
+
+                    setState(() {
+                      _center = loc;
+                      mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: _center,
+                            zoom: 16.0,
+                          ),
+                        ),
+                      );
+                      _marker = Marker(
+                        markerId: const MarkerId('Current Location'),
+                        position: _center,
+                        infoWindow: const InfoWindow(
+                          title: 'Current Location',
+                        ),
+                      );
+                    });
+                  }
+                },
+                decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  hintText: 'Search for your location',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+            ),
+          )),
       body: isLoading
           ? CustomShimmer(
               height: double.infinity,
@@ -148,6 +213,107 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class MapSearchPage extends StatefulWidget {
+  const MapSearchPage({super.key});
+
+  @override
+  State<MapSearchPage> createState() => _MapSearchPageState();
+}
+
+class _MapSearchPageState extends State<MapSearchPage> {
+  final controller = TextEditingController();
+  final uuid = Uuid();
+  String sessionToken = '';
+  List<dynamic> placesList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    controller.addListener(() {
+      onChange();
+    });
+  }
+
+  void onChange() {
+    if (sessionToken == '') {
+      setState(() {
+        sessionToken = uuid.v4();
+      });
+    } else {
+      getSuggestions(controller.text.toString());
+    }
+  }
+
+  void getSuggestions(String input) async {
+    String PLACES_API_KEY = 'AIzaSyBke7Nj7T0wuGTK87noDEX1lC_v58xwH3s';
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request =
+        '$baseURL?input=$input&key=$PLACES_API_KEY&sessiontoken=$sessionToken';
+    var response = await http.get(Uri.parse(request));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        placesList = json.decode(response.body)['predictions'];
+      });
+    } else {
+      throw Exception('Failed to load suggestions');
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Search Location'),
+        backgroundColor: appGreen,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              textInputAction: TextInputAction.search,
+              controller: controller,
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+                hintText: 'Search for your location',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: ListView.builder(
+            itemCount: placesList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(placesList[index]['description']),
+                onTap: () async {
+                  Navigator.pop(
+                      context, placesList[index]['description'].toString());
+                },
+              );
+            }),
+      ),
     );
   }
 }

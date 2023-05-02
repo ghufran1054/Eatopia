@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
     required this.validator,
     this.icon,
     this.inputType = TextInputType.text,
+    this.readOnly = false,
   }) : _primaryColor = primaryColor;
 
   final TextEditingController emailController;
@@ -21,6 +22,7 @@ class CustomTextField extends StatefulWidget {
   String? Function(String?)? validator;
   final Icon? icon;
   final TextInputType inputType;
+  final readOnly;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
@@ -30,6 +32,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      readOnly: widget.readOnly,
       controller: widget.emailController,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
       cursorColor: Colors.grey[600],
