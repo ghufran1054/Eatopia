@@ -15,6 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:eatopia/pages/Restaurant/res_items_page.dart';
 import 'package:eatopia/pages/Restaurant/res_more.dart';
 import 'package:eatopia/pages/Restaurant/res_order.dart';
+import 'package:eatopia/pages/Restaurant/res_profile.dart';
 
 class ResHome extends StatefulWidget {
   const ResHome({super.key});

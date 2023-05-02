@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key});
+class ResProfile extends StatefulWidget {
+  const ResProfile({Key? key});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<ResProfile> createState() => _ResProfileState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _ResProfileState extends State<ResProfile> {
   late User _user;
   String? _name;
+  String? _ownerName;
   String? _phoneNumber;
   String? _address;
   String? _email;
+  String? _description;
 
   @override
   void initState() {
@@ -26,14 +28,16 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _getUserData() async {
     final userData = await FirebaseFirestore.instance
-        .collection('Customers')
+        .collection('Restaurants')
         .doc(_user.uid)
         .get();
     setState(() {
-      _name = userData['name'];
+      _name = userData['restaurant'];
       _phoneNumber = userData['phone'];
-      _address = userData['stAddress'];
+      _address = userData['address'];
       _email = userData['email'];
+      _description = userData['description'];
+      _ownerName = userData['owner'];
     });
   }
 
@@ -42,10 +46,21 @@ class _UserProfileState extends State<UserProfile> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Edit User Data'),
+            title: const Text('Edit Restaurant Data'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Owner Name',
+                    hintText: _ownerName,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _ownerName = value;
+                    });
+                  },
+                ),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Name',
@@ -54,6 +69,17 @@ class _UserProfileState extends State<UserProfile> {
                   onChanged: (value) {
                     setState(() {
                       _name = value;
+                    });
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    hintText: _description,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _description = value;
                     });
                   },
                 ),
@@ -95,9 +121,11 @@ class _UserProfileState extends State<UserProfile> {
                       .collection('Customers')
                       .doc(_user.uid);
                   await userDataRef.update({
-                    'name': _name,
+                    'restaurant': _name,
+                    'description': _description,
+                    'owner': _ownerName,
                     'phone': _phoneNumber,
-                    'stAddress': _address,
+                    'address': _address,
                   });
                   // Update the UI to reflect the edited data
                   _getUserData();
@@ -139,7 +167,7 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     const SizedBox(width: 20),
                     Text(
-                      _name ?? '',
+                      _ownerName ?? '',
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -160,8 +188,16 @@ class _UserProfileState extends State<UserProfile> {
                   child: Column(
                     children: [
                       buildInfoRow(
+                        label: 'Name',
+                        value: _name ?? '',
+                      ),
+                      buildInfoRow(
                         label: 'Email',
                         value: _email ?? '',
+                      ),
+                      buildInfoRow(
+                        label: 'Description',
+                        value: _description ?? '',
                       ),
                       buildInfoRow(
                         label: 'Phone Number',
