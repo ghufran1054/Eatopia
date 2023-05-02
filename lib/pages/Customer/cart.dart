@@ -6,6 +6,8 @@ import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 
+import 'checkout.dart';
+
 class cart extends StatefulWidget {
   const cart({super.key});
 
@@ -223,7 +225,17 @@ class _cartState extends State<cart> with AutomaticKeepAliveClientMixin {
               CartList.list.isEmpty
                   ? const SizedBox()
                   : ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final user = await Db()
+                            .getUserInfo(AuthServices().auth.currentUser!.uid);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CheckoutPage(
+                                userData: user,
+                              ),
+                            ));
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         fixedSize:

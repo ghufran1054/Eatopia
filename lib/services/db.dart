@@ -9,6 +9,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class Db {
   final db = FirebaseFirestore.instance;
+  Future<Map<String, dynamic>> getUserInfo(String uid) async {
+    final doc = await db.collection('Customers').doc(uid).get();
+    return doc.data()!;
+  }
 
   Future<void> addOrderItemToCart(String uid, Map<String, dynamic> orderItem,
       {StateSetter? setState}) async {
