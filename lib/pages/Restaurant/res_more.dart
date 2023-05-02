@@ -1,19 +1,17 @@
 import 'package:eatopia/services/auth_services.dart';
-import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 
-class UserMore extends StatefulWidget {
-  const UserMore({super.key});
+class ResMore extends StatefulWidget {
+  const ResMore({super.key});
   @override
-  State<UserMore> createState() => _UserMoreState();
+  State<ResMore> createState() => _ResMoreState();
 }
 
-class _UserMoreState extends State<UserMore> {
+class _ResMoreState extends State<ResMore> {
   List<String> value = [
     'Profile',
     'Address',
-    'Create Business Account',
     'Terms and Policies',
     'About us',
     'Logout'
@@ -23,7 +21,6 @@ class _UserMoreState extends State<UserMore> {
   List<IconData> icons = [
     Icons.person,
     Icons.location_on,
-    Icons.business,
     Icons.policy,
     Icons.info,
     Icons.logout
@@ -58,9 +55,7 @@ class _UserMoreState extends State<UserMore> {
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () async {
                   if (value[index] == 'Profile') {
-                    Navigator.pushNamed(context, '/User_profile');
-                  } else if (value[index] == 'Create Business Account') {
-                    Navigator.pushNamed(context, '/BuisnessSignup');
+                    Navigator.pushNamed(context, '/res_profile');
                   } else if (value[index] == 'Terms and Policies') {
                     Navigator.pushNamed(context, '/Terms_policy');
                   } else if (value[index] == 'About us') {
@@ -69,19 +64,7 @@ class _UserMoreState extends State<UserMore> {
                     await AuthServices().auth.signOut();
                     Navigator.pushReplacementNamed(context, '/WelcomePage');
                   } else if (value[index] == 'Address') {
-                    String? locTxt =
-                        await Navigator.pushNamed(context, '/MapScreen');
-                    if (locTxt != null &&
-                        AuthServices().auth.currentUser != null) {
-                      await Db().updateUserAddress(
-                          AuthServices().auth.currentUser!.uid, locTxt);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Address Updated!'),
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
-                    }
+                    Navigator.pushNamed(context, '/MapScreen');
                   }
                 },
               ),
