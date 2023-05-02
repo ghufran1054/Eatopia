@@ -1,12 +1,48 @@
 import 'dart:io';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/pages/Restaurant/search_result_class.dart';
+import 'package:eatopia/utilities/order_item.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class Db {
   final db = FirebaseFirestore.instance;
+
+  Future<void> addOrderItemToCart(String uid, Map<String, dynamic> orderItem,
+      {StateSetter? setState}) async {
+    final doc = db.collection('Customers').doc(uid).collection('Cart').doc();
+    await doc.set(orderItem);
+    CartList.list.add(OrderItem(
+      id: doc.id,
+      itemId: orderItem['itemId'],
+      title: orderItem['name'],
+      quantity: orderItem['quantity'],
+      addOns: orderItem['addOns'],
+      spcInstr: orderItem['spcInstr'],
+      basePrice: orderItem['basePrice'],
+      restId: orderItem['restId'],
+    ));
+  }
+
+  Future<void> loadCartItems(String uid) async {
+    final cartItems =
+        await db.collection('Customers').doc(uid).collection('Cart').get();
+    for (final item in cartItems.docs) {
+      OrderItem orderItem = OrderItem(
+        id: item.id,
+        itemId: item['itemId'],
+        title: item['name'],
+        quantity: item['quantity'],
+        addOns: item['addOns'],
+        spcInstr: item['spcInstr'],
+        basePrice: item['basePrice'],
+        restId: item['restId'],
+      );
+      CartList.list.add(orderItem);
+    }
+  }
 
   Future<void> updateUserAddress(String uid, String add) async {
     await db.collection('Customers').doc(uid).update({'stAddress': add});

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
+import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
@@ -7,14 +9,16 @@ import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 
 class ItemDescPage extends StatefulWidget {
-  const ItemDescPage({super.key, required this.item});
+  const ItemDescPage({super.key, required this.item, required this.restId});
   final Item item;
+  final String restId;
 
   @override
   State<ItemDescPage> createState() => _ItemDescPageState();
 }
 
 class _ItemDescPageState extends State<ItemDescPage> {
+  Map<String, dynamic> data = {};
   final spInstrCOntroller = TextEditingController();
   int itemCount = 1;
   @override
@@ -171,34 +175,59 @@ class _ItemDescPageState extends State<ItemDescPage> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
-                  CartList.list.add(OrderItem(
-                      title: widget.item.name,
-                      basePrice: widget.item.price,
-                      quantity: itemCount,
-                      addOns: widget.item.addOns,
-                      id: widget.item.itemId,
-                      spcInstr: spInstrCOntroller.text));
-
+                onPressed: () async {
                   //Showing A confirmation dialog
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          title: const Text('Item Added to Cart'),
-                          content: const Text(
-                              'Your item has been added to the cart'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('OK'))
-                          ],
-                        );
-                      });
+                  if (AuthServices().auth.currentUser != null) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            title: const Text('Item Added to Cart'),
+                            content: const Text(
+                                'Your item has been added to the cart'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'))
+                            ],
+                          );
+                        });
+                    await Db().addOrderItemToCart(
+                        AuthServices().auth.currentUser!.uid,
+                        {
+                          'name': widget.item.name,
+                          'basePrice': widget.item.price,
+                          'quantity': itemCount,
+                          'spcInstr': spInstrCOntroller.text,
+                          'addOns': data,
+                          'restId': widget.restId,
+                          'itemId': widget.item.itemId,
+                        },
+                        setState: setState);
+                  } else {
+                    //Showing A dialog to Say user to login
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            title:
+                                const Text('PLease Login to Add Items to cart'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'))
+                            ],
+                          );
+                        });
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size(50, 50),

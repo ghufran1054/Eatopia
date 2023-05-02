@@ -182,7 +182,10 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                 controller: _tabController,
                 children: ctgItems.keys
                     .toList()
-                    .map((e) => ItemList(itemList: ctgItems[e]!))
+                    .map((e) => ItemList(
+                          itemList: ctgItems[e]!,
+                          restId: widget.data['id'],
+                        ))
                     .toList(),
               ),
       ),
@@ -251,8 +254,9 @@ class _ResTabsState extends State<ResTabs> {
 }
 
 class ItemList extends StatefulWidget {
-  const ItemList({super.key, required this.itemList});
+  const ItemList({super.key, required this.itemList, required this.restId});
   final List<Item> itemList;
+  final String restId;
 
   @override
   State<ItemList> createState() => _ItemListState();
@@ -282,6 +286,7 @@ class _ItemListState extends State<ItemList>
                   MaterialPageRoute(
                     builder: (context) => ItemDescPage(
                       item: widget.itemList[index],
+                      restId: widget.restId,
                     ),
                   ),
                 );

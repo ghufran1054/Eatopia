@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'colours.dart';
 
 class OrderItem {
+  String restId;
+  String itemId;
   String id;
   String title;
   String spcInstr;
@@ -133,12 +135,14 @@ class OrderItem {
   }
 
   OrderItem(
-      {required this.id,
+      {required this.itemId,
+      required this.id,
       required this.title,
       required this.quantity,
       required this.basePrice,
       required this.addOns,
-      required this.spcInstr});
+      required this.spcInstr,
+      required this.restId});
 }
 
 class CartList {
