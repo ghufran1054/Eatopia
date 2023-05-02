@@ -189,6 +189,7 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
                     (doc.data() as Map<String, dynamic>).containsKey('isOpen')
                         ? doc['isOpen']
                         : false;
+                String address = doc['address'];
                 return Visibility(
                   visible: isOpen,
                   child: GestureDetector(
@@ -201,6 +202,9 @@ class _RestaurantTilesState extends State<RestaurantTiles> {
                                     'restaurant': doc['restaurant'],
                                     'image': imageURL,
                                     'description': resDesc,
+                                    'address': address,
+                                    'email': doc['email'],
+                                    'phone': doc['phone'],
                                   })));
                     },
                     child: ImageTile(

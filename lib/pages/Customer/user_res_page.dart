@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eatopia/pages/Customer/item_desc_page.dart';
+import 'package:eatopia/pages/Customer/res_review_info.dart';
 import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/cache_manger.dart';
@@ -138,7 +139,13 @@ class _UserRestauarantPageState extends State<UserRestauarantPage>
                           ),
                           const Spacer(),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ReviewInfoPage(
+                                            resData: widget.data)));
+                              },
                               child: const Text(
                                 'Reviews & Info',
                               )),

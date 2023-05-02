@@ -296,6 +296,7 @@ class _BuisnessSignupState extends State<BuisnessSignup> {
                           'phone': phoneController.text,
                           'address': addressController.text,
                           'Categories': [],
+                          'email': emailController.text,
                         });
 
                         setState(() {
