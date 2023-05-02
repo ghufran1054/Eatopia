@@ -13,6 +13,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:eatopia/pages/Restaurant/res_items_page.dart';
+import 'package:eatopia/pages/Restaurant/res_more.dart';
+import 'package:eatopia/pages/Restaurant/res_order.dart';
 
 class ResHome extends StatefulWidget {
   const ResHome({super.key});
@@ -74,10 +76,9 @@ class _ResHomeState extends State<ResHome> {
           controller: pageController,
           children: const [
             ResMainHome(),
-
             ResItemsPage(),
-            // const ResOrders(),
-            // const ResMore(),
+            ResOrders(),
+            ResMore(),
           ]),
     );
   }
