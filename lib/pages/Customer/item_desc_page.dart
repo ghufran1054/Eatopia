@@ -3,6 +3,7 @@ import 'package:eatopia/pages/Restaurant/items.dart';
 import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
+import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 
 class ItemDescPage extends StatefulWidget {
@@ -14,7 +15,8 @@ class ItemDescPage extends StatefulWidget {
 }
 
 class _ItemDescPageState extends State<ItemDescPage> {
-  int itemCount = 0;
+  final spInstrCOntroller = TextEditingController();
+  int itemCount = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,8 +97,9 @@ class _ItemDescPageState extends State<ItemDescPage> {
             const SizedBox(
               height: 20,
             ),
-            TextField(
+            TextFormField(
               maxLength: 200,
+              controller: spInstrCOntroller,
               maxLines: 3,
               onTapOutside: (event) => FocusScope.of(context).unfocus(),
               decoration: InputDecoration(
@@ -113,7 +116,7 @@ class _ItemDescPageState extends State<ItemDescPage> {
           children: [
             InkWell(
               onTap: () {
-                if (itemCount != 0) {
+                if (itemCount != 1) {
                   setState(() {
                     itemCount--;
                   });
@@ -123,7 +126,7 @@ class _ItemDescPageState extends State<ItemDescPage> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: itemCount != 0 ? appGreen : Colors.grey,
+                  color: itemCount != 1 ? appGreen : Colors.grey,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -168,7 +171,35 @@ class _ItemDescPageState extends State<ItemDescPage> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  CartList.list.add(OrderItem(
+                      title: widget.item.name,
+                      basePrice: widget.item.price,
+                      quantity: itemCount,
+                      addOns: widget.item.addOns,
+                      id: widget.item.itemId,
+                      spcInstr: spInstrCOntroller.text));
+
+                  //Showing A confirmation dialog
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          title: const Text('Item Added to Cart'),
+                          content: const Text(
+                              'Your item has been added to the cart'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('OK'))
+                          ],
+                        );
+                      });
+                },
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size(50, 50),
                     shape: RoundedRectangleBorder(
