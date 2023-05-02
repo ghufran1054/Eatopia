@@ -112,19 +112,19 @@ class _ReviewInfoPageState extends State<ReviewInfoPage> {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         Text(
                             //widget.resData['reviews'][index]['user'],
                             'User',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: 'ubuntu-bold',
                                 color: Colors.black,
                                 fontSize: 17)),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 5),
                         Text(
                             //widget.resData['reviews'][index]['review'],
                             'This is a Sample Review',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: 'ubuntu',
                                 color: Colors.black,
                                 fontSize: 12)),

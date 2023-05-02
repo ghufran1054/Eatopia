@@ -57,7 +57,7 @@ class _ResMoreState extends State<ResMore> {
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () async {
                   if (value[index] == 'Profile') {
-                    Navigator.pushNamed(context, '/res_profile');
+                    Navigator.pushNamed(context, '/Res_profile');
                   } else if (value[index] == 'Terms and Policies') {
                     Navigator.pushNamed(context, '/Terms_policy');
                   } else if (value[index] == 'About us') {

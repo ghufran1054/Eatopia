@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserProfile extends StatefulWidget {
-  const UserProfile({Key? key});
+  const UserProfile({super.key});
 
   @override
   State<UserProfile> createState() => _UserProfileState();
@@ -132,10 +132,10 @@ class _UserProfileState extends State<UserProfile> {
                 Row(
                   children: [
                     const SizedBox(width: 20),
-                    CircleAvatar(
+                    const CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       radius: 50,
-                      backgroundImage:
-                          const AssetImage('assets/images/user.png'),
+                      backgroundImage: AssetImage('images/user.png'),
                     ),
                     const SizedBox(width: 20),
                     Text(
@@ -165,7 +165,7 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                       buildInfoRow(
                         label: 'Phone Number',
-                        value: _phoneNumber ?? '',
+                        value: _phoneNumber ?? 'Not set',
                       ),
                       buildInfoRow(
                         label: 'Address',
@@ -179,7 +179,7 @@ class _UserProfileState extends State<UserProfile> {
                               _editUserData();
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor: appGreen,
                               foregroundColor: Colors.white,
                             ),
                             child: const Text('Edit'),
@@ -232,6 +232,7 @@ Widget buildInfoRow({
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '$label: ',
@@ -240,9 +241,11 @@ Widget buildInfoRow({
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+          ),
         ),
       ],
     ),

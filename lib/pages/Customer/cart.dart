@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/colours.dart';

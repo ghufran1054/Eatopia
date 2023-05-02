@@ -1,5 +1,4 @@
 import 'package:eatopia/services/maps.dart';
-import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 

@@ -27,7 +27,6 @@ class PopupDialog extends StatelessWidget {
                 fontSize: 16.0,
               )),
           ElevatedButton(
-            child: Text('Sign Up'),
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/UserSignUpPageOne');
             },
@@ -39,9 +38,9 @@ class PopupDialog extends StatelessWidget {
               // change background color of button
               backgroundColor: appGreen, // change text color of button
             ),
+            child: const Text('Sign Up'),
           ),
           ElevatedButton(
-            child: Text('Login'),
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/LoginPage');
             },
@@ -53,6 +52,7 @@ class PopupDialog extends StatelessWidget {
               // change background color of button
               backgroundColor: appGreen, // change text color of button
             ),
+            child: const Text('Login'),
           ),
         ],
       ),
@@ -120,10 +120,10 @@ class _UserMoreState extends State<UserMore> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return PopupDialog();
+                          return const PopupDialog();
                         },
                       );
-                    } else if (user != null) {
+                    } else {
                       Navigator.pushNamed(context, '/User_profile');
                     }
                   } else if (value[index] == 'Create Business Account') {
@@ -148,7 +148,7 @@ class _UserMoreState extends State<UserMore> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           backgroundColor: appGreen,
-                          content: Text('Address Updated!'),
+                          content: const Text('Address Updated!'),
                           duration: const Duration(seconds: 2),
                         ),
                       );

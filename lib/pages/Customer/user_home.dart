@@ -1,6 +1,5 @@
 import 'package:eatopia/pages/Customer/cart.dart';
 import 'package:eatopia/pages/Customer/user_more.dart';
-import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/pages/Customer/user_main_home.dart';

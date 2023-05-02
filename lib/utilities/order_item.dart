@@ -48,7 +48,7 @@ class OrderItem {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            title + 'Double Chicken Double CHeese',
+            title,
             style: const TextStyle(fontFamily: 'ubuntu-bold', fontSize: 20),
           ),
           const SizedBox(height: 5),

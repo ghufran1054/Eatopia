@@ -5,7 +5,6 @@ import 'package:eatopia/services/db.dart';
 import 'package:eatopia/utilities/cache_manger.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
-import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 
 class ItemDescPage extends StatefulWidget {

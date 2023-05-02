@@ -1,10 +1,9 @@
-import 'package:eatopia/utilities/colours.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ResProfile extends StatefulWidget {
-  const ResProfile({Key? key});
+  const ResProfile({super.key});
 
   @override
   State<ResProfile> createState() => _ResProfileState();
@@ -69,17 +68,6 @@ class _ResProfileState extends State<ResProfile> {
                   onChanged: (value) {
                     setState(() {
                       _name = value;
-                    });
-                  },
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Description',
-                    hintText: _description,
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _description = value;
                     });
                   },
                 ),
@@ -160,10 +148,10 @@ class _ResProfileState extends State<ResProfile> {
                 Row(
                   children: [
                     const SizedBox(width: 20),
-                    CircleAvatar(
+                    const CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       radius: 50,
-                      backgroundImage:
-                          const AssetImage('assets/images/user.png'),
+                      backgroundImage: AssetImage('images/user.png'),
                     ),
                     const SizedBox(width: 20),
                     Text(
@@ -194,10 +182,6 @@ class _ResProfileState extends State<ResProfile> {
                       buildInfoRow(
                         label: 'Email',
                         value: _email ?? '',
-                      ),
-                      buildInfoRow(
-                        label: 'Description',
-                        value: _description ?? '',
                       ),
                       buildInfoRow(
                         label: 'Phone Number',
@@ -268,6 +252,7 @@ Widget buildInfoRow({
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 5),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '$label: ',
@@ -276,9 +261,11 @@ Widget buildInfoRow({
             fontWeight: FontWeight.bold,
           ),
         ),
-        Text(
-          value,
-          style: const TextStyle(fontSize: 16),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+          ),
         ),
       ],
     ),

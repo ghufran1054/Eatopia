@@ -22,7 +22,7 @@ class CustomTextField extends StatefulWidget {
   String? Function(String?)? validator;
   final Icon? icon;
   final TextInputType inputType;
-  final readOnly;
+  final bool readOnly;
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
