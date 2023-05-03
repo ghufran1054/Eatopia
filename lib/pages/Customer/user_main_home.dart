@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eatopia/pages/Customer/dine_in.dart';
+import 'package:eatopia/pages/Customer/res_dine.dart';
 import 'package:eatopia/pages/Customer/user_res_page.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
@@ -153,15 +155,23 @@ class _UserMainHomeState extends State<UserMainHome>
                                 Icons.delivery_dining_rounded,
                                 size: 30,
                               )),
-                          CustomTile(
-                              size: Size(
-                                  scrSize.width * 0.4, scrSize.height * 0.23),
-                              heading: 'Dine-in',
-                              description: 'Make Reservations and eat out!',
-                              icon: const Icon(
-                                Icons.restaurant,
-                                size: 30,
-                              )),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Res_Dine()));
+                            },
+                            child: CustomTile(
+                                size: Size(
+                                    scrSize.width * 0.4, scrSize.height * 0.23),
+                                heading: 'Dine-in',
+                                description: 'Make Reservations and eat out!',
+                                icon: const Icon(
+                                  Icons.restaurant,
+                                  size: 30,
+                                )),
+                          ),
                         ],
                       )
                     ],
