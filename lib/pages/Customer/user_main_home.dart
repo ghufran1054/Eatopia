@@ -4,6 +4,7 @@ import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
+import 'package:eatopia/pages/Restaurant/all_res.dart';
 
 import 'search_page.dart';
 
@@ -128,7 +129,12 @@ class _UserMainHomeState extends State<UserMainHome>
                           ),
                           const Spacer(),
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const All_Res()));
+                              },
                               child: Text(
                                 'View All',
                                 style: TextStyle(
