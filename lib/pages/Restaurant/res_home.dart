@@ -26,6 +26,7 @@ class ResHome extends StatefulWidget {
 class _ResHomeState extends State<ResHome> {
   late Size scrSize;
   int selectedIndex = 0;
+  List<String> headings = ['Home', 'Manage Items', 'Orders', 'More'];
   final PageController pageController = PageController();
   @override
   Widget build(BuildContext context) {
@@ -60,16 +61,7 @@ class _ResHomeState extends State<ResHome> {
             BottomNavigationBarItem(icon: Icon(Icons.list), label: 'More'),
           ]),
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await AuthServices().auth.signOut();
-              Navigator.pushReplacementNamed(context, '/WelcomePage');
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
-        title: const Text('Restaurant Home'),
+        title: Text(headings[selectedIndex]),
       ),
       body: PageView(
           physics: const NeverScrollableScrollPhysics(),
