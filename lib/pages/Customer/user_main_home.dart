@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eatopia/pages/Customer/user_res_page.dart';
+import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/utilities/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:eatopia/utilities/colours.dart';
 import 'package:eatopia/utilities/custom_tiles.dart';
 
 import 'search_page.dart';
+import 'user_order_page.dart';
 
 class UserMainHome extends StatefulWidget {
   const UserMainHome({super.key});
@@ -69,6 +71,63 @@ class _UserMainHomeState extends State<UserMainHome>
         Expanded(
           child: ListView(
             children: [
+              //List Tile showing View Your Orders Button
+              SizedBox(
+                height: 70,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 5,
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    onTap: () {
+                      if (AuthServices().auth.currentUser != null) {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const UserOrder();
+                        }));
+                      }
+                      //SHow a Pop up Saying sign-in to continue
+                      else {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Sign In to Continue'),
+                              content: const Text(
+                                  'You need to sign in to view your orders'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('OK'),
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    title: const Text(
+                      'View Your Orders',
+                      style: TextStyle(
+                        fontFamily: 'ubuntu-bold',
+                        fontSize: 20,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
               //Container for Displaying tiles
               Container(
                 constraints: const BoxConstraints(minHeight: 200),

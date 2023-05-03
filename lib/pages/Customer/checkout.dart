@@ -1,4 +1,10 @@
+import 'package:eatopia/pages/Customer/user_home.dart';
+import 'package:eatopia/pages/Customer/user_main_home.dart';
+import 'package:eatopia/services/auth_services.dart';
+import 'package:eatopia/services/db.dart';
 import 'package:eatopia/services/maps.dart';
+import 'package:eatopia/utilities/colours.dart';
+import 'package:eatopia/utilities/order.dart';
 import 'package:eatopia/utilities/order_item.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +17,7 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,10 +236,50 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       fontFamily: 'ubuntu-bold',
                     ),
                   ),
-                  onPressed: () {},
-                  child: const Text(
-                    'Place Order',
-                  )),
+                  onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    Order order = Order(
+                      userAddress: widget.userData['stAddress'],
+                      payMentMethod: 'COD',
+                      phone: widget.userData['phone'],
+                      custId: AuthServices().auth.currentUser!.uid,
+                      restId: CartList.list[0].restId,
+                      status: 'pending',
+                    );
+                    order.addAllOrderItems(CartList.list);
+                    await Db().addOrder(order);
+                    setState(() {
+                      isLoading = false;
+                    });
+                    //Show SnackBar
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: appGreen,
+                        content: const Text('Order Placed Successfully'),
+                      ),
+                    );
+                    //Clear Cart
+                    CartList.list.clear();
+                    //Clear from database
+                    await Db().clearCart(AuthServices().auth.currentUser!.uid);
+                    //Redirect To Home Screen
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserHomePage(),
+                        ),
+                        (route) => false);
+                  },
+                  child: isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 1.2,
+                        )
+                      : const Text(
+                          'Place Order',
+                        )),
               const SizedBox(height: 20)
             ],
           ),

@@ -6,12 +6,61 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:eatopia/utilities/order.dart' as ord;
 
 class Db {
   final db = FirebaseFirestore.instance;
   Future<Map<String, dynamic>> getUserInfo(String uid) async {
     final doc = await db.collection('Customers').doc(uid).get();
     return doc.data()!;
+  }
+
+  Future<void> updateOrderStatus(
+      String status, String restId, String custId, String orderId) async {
+    await db
+        .collection('Customers')
+        .doc(custId)
+        .collection('Orders')
+        .doc(orderId)
+        .update({'status': status});
+    await db
+        .collection('Restaurants')
+        .doc(restId)
+        .collection('Orders')
+        .doc(orderId)
+        .update({'status': status});
+  }
+
+  Future<void> addOrder(ord.Order order) async {
+    //Setting to user side
+    final doc =
+        db.collection('Customers').doc(order.custId).collection('Orders').doc();
+    await doc.set({
+      'restId': order.restId,
+      'custId': order.custId,
+      'userAddress': order.userAddress,
+      'payMentMethod': order.payMentMethod,
+      'status': order.status,
+      'phone': order.phone,
+      'orderItems': order.orderItems,
+    });
+
+    //Setting in Restaurant side
+    final docRest = db
+        .collection('Restaurants')
+        .doc(order.restId)
+        .collection('Orders')
+        .doc(doc.id);
+
+    await docRest.set({
+      'restId': order.restId,
+      'custId': order.custId,
+      'userAddress': order.userAddress,
+      'payMentMethod': order.payMentMethod,
+      'status': order.status,
+      'phone': order.phone,
+      'orderItems': order.orderItems,
+    });
   }
 
   Future<void> addOrderItemToCart(String uid, Map<String, dynamic> orderItem,
@@ -28,6 +77,19 @@ class Db {
       basePrice: orderItem['basePrice'],
       restId: orderItem['restId'],
     ));
+  }
+
+  Future<void> clearCart(String uid) async {
+    await db
+        .collection('Customers')
+        .doc(uid)
+        .collection('Cart')
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    });
   }
 
   Future<void> loadCartItems(String uid) async {

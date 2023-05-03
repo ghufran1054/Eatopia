@@ -107,6 +107,8 @@ class _ResMainHomeState extends State<ResMainHome>
           //Restaurant Name Display
           RestOpenToggle(),
           SizedBox(height: 20),
+          //VIew Orders Button
+
           RestaurantNameWidget(),
           SizedBox(height: 20),
           AddDescriptionWidget(),
