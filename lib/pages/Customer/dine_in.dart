@@ -8,7 +8,7 @@ class DineInPage extends StatefulWidget {
 class _DineInPageState extends State<DineInPage> {
   String _searchText = '';
   late TextEditingController _searchController = TextEditingController();
-  late List<String> _tables = [
+  final List<String> _tables = [
     'Table 1',
     'Table 2',
     'Table 3',
@@ -48,7 +48,7 @@ class _DineInPageState extends State<DineInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dine-In'),
+        title: const Text('Dine-In'),
       ),
       body: Column(
         children: [
@@ -56,7 +56,7 @@ class _DineInPageState extends State<DineInPage> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               controller: _searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Search for a table',
                 prefixIcon: Icon(Icons.search),
               ),
@@ -80,7 +80,7 @@ class _DineInPageState extends State<DineInPage> {
                         ),
                       );
                     },
-                    child: Text('Reserve'),
+                    child: const Text('Reserve'),
                   ),
                 );
               },
@@ -139,7 +139,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
@@ -147,7 +147,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
@@ -155,7 +155,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _phoneController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Phone',
                   border: OutlineInputBorder(),
                 ),
@@ -163,7 +163,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _dateController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Date',
                   border: OutlineInputBorder(),
                 ),
@@ -171,7 +171,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _timeController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Time',
                   border: OutlineInputBorder(),
                 ),
@@ -179,7 +179,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               const SizedBox(height: 16.0),
               TextField(
                 controller: _guestsController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Number of Guests',
                   border: OutlineInputBorder(),
                 ),

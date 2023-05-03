@@ -1,5 +1,4 @@
 import 'package:eatopia/pages/Customer/user_home.dart';
-import 'package:eatopia/pages/Customer/user_main_home.dart';
 import 'package:eatopia/services/auth_services.dart';
 import 'package:eatopia/services/db.dart';
 import 'package:eatopia/services/maps.dart';
