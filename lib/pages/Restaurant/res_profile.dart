@@ -42,11 +42,12 @@ class _ResProfileState extends State<ResProfile> {
 
   void _editUserData() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Edit Restaurant Data'),
-            content: Column(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Edit Restaurant Data'),
+          content: SingleChildScrollView(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
@@ -95,35 +96,37 @@ class _ResProfileState extends State<ResProfile> {
                 ),
               ],
             ),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  // Save the edited data to Firebase
-                  final userDataRef = FirebaseFirestore.instance
-                      .collection('Customers')
-                      .doc(_user.uid);
-                  await userDataRef.update({
-                    'restaurant': _name,
-                    'description': _description,
-                    'owner': _ownerName,
-                    'phone': _phoneNumber,
-                    'address': _address,
-                  });
-                  // Update the UI to reflect the edited data
-                  _getUserData();
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          );
-        });
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                // Save the edited data to Firebase
+                final userDataRef = FirebaseFirestore.instance
+                    .collection('Customers')
+                    .doc(_user.uid);
+                await userDataRef.update({
+                  'restaurant': _name,
+                  'description': _description,
+                  'owner': _ownerName,
+                  'phone': _phoneNumber,
+                  'address': _address,
+                });
+                // Update the UI to reflect the edited data
+                _getUserData();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
